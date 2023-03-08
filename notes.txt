@@ -1,0 +1,3 @@
+changes packages:
+-changed pytorch from 1.11.0 to 1.13.0 to run on sm_86
+-changed datasets from 2.5.1 to 2.10.1 bc imdb was not loading correctly
