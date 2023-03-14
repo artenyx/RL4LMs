@@ -53,7 +53,7 @@ train_evaluation:
   eval_every: 5
   save_every: 10
   metrics:
-    - id: intent_accuracy
+#    - id: intent_accuracy
     - id: causal_perplexity
       args:
         tokenizer_id: gpt2
@@ -66,9 +66,9 @@ train_evaluation:
     - id: rouge
     - id: bleu
       args: {}
-#    - id: bert_score
-#      args:
-#        language: en
+    - id: bert_score
+      args:
+        language: en
     - id: sacre_bleu
       args:
         tokenize: "intl"
