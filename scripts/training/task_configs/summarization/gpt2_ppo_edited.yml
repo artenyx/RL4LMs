@@ -41,7 +41,6 @@ alg:
     args:
       model_name: gpt2
       apply_model_parallel: True
-      prompt_truncation_side: "right"
       generation_kwargs:
         do_sample: True
         top_k: 20
