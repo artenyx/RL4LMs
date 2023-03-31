@@ -72,7 +72,8 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         )
 
         self._value_model = AutoModelForCausalLM.from_pretrained(model_name)
-        self._ref_model = deepcopy(self._policy_model).eval()
+        #self._ref_model = deepcopy(self._policy_model).eval()
+        self._ref_model = AutoModelForCausalLM.from_pretrained(model_name).eval()
 
         self._value_head = nn.Linear(
             self._value_model.config.hidden_size, 1, bias=False
