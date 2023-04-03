@@ -73,7 +73,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
 
         self._value_model = AutoModelForCausalLM.from_pretrained(model_name)
         #self._ref_model = deepcopy(self._policy_model).eval()
-        self._ref_model = AutoModelForCausalLM.from_pretrained("gpt2-medium").eval()
+        self._ref_model = AutoModelForCausalLM.from_pretrained("gpt2-large").eval()
         print("*POLICY CHANGE SUCCESSFUL*")
 
         self._value_head = nn.Linear(
