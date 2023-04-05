@@ -10,7 +10,7 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
-date_time = datetime.now().strftime("%m%d%y_%H%M")
+date_time = datetime.now().strftime("%m%d%y_%H%M%S")
 
 def main(
     config_path: str,
