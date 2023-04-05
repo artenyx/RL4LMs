@@ -1,5 +1,6 @@
 import os
 from argparse import ArgumentParser
+from datetime import datetime
 
 import yaml
 
@@ -9,6 +10,7 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
+date_time = datetime.now().strftime("%m%d%y_%H%M")
 
 def main(
     config_path: str,
@@ -65,7 +67,7 @@ if __name__ == "__main__":
         "--experiment_name",
         type=str,
         help="WANDB experiment name",
-        default="rl4lm_experiment",
+        default=date_time,
     )
     parser.add_argument(
         "--entity_name", type=str, help="WANDB entity name", default=None
