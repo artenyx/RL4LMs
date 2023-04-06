@@ -19,11 +19,16 @@ def main(
     base_path_to_store_results: str,
     entity_name: str,
     log_to_wandb: bool,
+    base_model_name: str,
+    ref_model_name: str
 ):
 
     # load the config file
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
+
+    config["alg"]["policy"]["args"]["model_name"] = base_model_name
+    config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
 
     # load tracker
     tracker = Tracker(
@@ -79,9 +84,15 @@ if __name__ == "__main__":
         default=os.getcwd(),
     )
     parser.add_argument(
+        "--base_model_name",
+        type=str,
+        help="Base model hf name",
+        default="gpt2"
+    )
+    parser.add_argument(
         "--ref_model_name",
         type=str,
-        help="Base path to store experiment results"
+        help="Reference model hf name"
     )
     parser.add_argument(
         "--log_to_wandb", action="store_true", help="Whether to use wandb logging"
@@ -95,4 +106,6 @@ if __name__ == "__main__":
         args.base_path_to_store_results,
         args.entity_name,
         args.log_to_wandb,
+        args.base_model_name,
+        args.ref_model_name
     )
