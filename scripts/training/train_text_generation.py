@@ -10,8 +10,6 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
-date_time = datetime.now().strftime("%m%d%y_%H%M%S")
-
 def main(
     config_path: str,
     project_name: str,
@@ -22,7 +20,8 @@ def main(
     base_model_name: str,
     ref_model_name: str
 ):
-
+    if experiment_name is None:
+        experiment_name = base_model_name + "base_" + ref_model_name + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
     # load the config file
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
@@ -72,7 +71,7 @@ if __name__ == "__main__":
         "--experiment_name",
         type=str,
         help="WANDB experiment name",
-        default=date_time,
+        default=None,
     )
     parser.add_argument(
         "--entity_name", type=str, help="WANDB entity name", default=None
