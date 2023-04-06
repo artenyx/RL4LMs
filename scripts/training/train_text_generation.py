@@ -79,6 +79,11 @@ if __name__ == "__main__":
         default=os.getcwd(),
     )
     parser.add_argument(
+        "--ref_model_name",
+        type=str,
+        help="Base path to store experiment results"
+    )
+    parser.add_argument(
         "--log_to_wandb", action="store_true", help="Whether to use wandb logging"
     )
     args = parser.parse_args()
