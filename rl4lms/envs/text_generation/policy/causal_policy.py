@@ -41,6 +41,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         action_space: Discrete,
         lr_schedule: Schedule,
         model_name: str,
+        ref_model_name: str,
         optimizer_kwargs: Dict[str, Any] = {},
         weight_decay: float = 1e-6,
         use_sde: bool = None,
@@ -55,6 +56,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
             action_space,
             lr_schedule,
             model_name,
+            ref_model_name,
             optimizer_kwargs,
             weight_decay,
             use_sde,
@@ -65,7 +67,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         )
         self.load_from_dict(state_dict)
 
-    def _build_model_heads(self, model_name: str):
+    def _build_model_heads(self, model_name: str, ref_model_name: str):
         self._policy_model = AutoModelForCausalLM.from_pretrained(model_name)
         self._policy_model.__class__ = override_generation_routines(
             type(self._policy_model)
@@ -73,7 +75,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
 
         self._value_model = AutoModelForCausalLM.from_pretrained(model_name)
         #self._ref_model = deepcopy(self._policy_model).eval()
-        self._ref_model = AutoModelForCausalLM.from_pretrained("gpt2-large").eval()
+        self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name).eval()
         print("*POLICY CHANGE SUCCESSFUL*")
 
         self._value_head = nn.Linear(

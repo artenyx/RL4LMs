@@ -40,6 +40,7 @@ alg:
     id: causal_lm_actor_critic_policy
     args:
       model_name: gpt2
+      ref_model_name: gpt-large
       apply_model_parallel: True
       generation_kwargs:
         do_sample: True
