@@ -21,7 +21,7 @@ def main(
     ref_model_name: str
 ):
     if experiment_name is None:
-        experiment_name = base_model_name + "base_" + ref_model_name + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
+        experiment_name = base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
     # load the config file
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
