@@ -18,7 +18,8 @@ def main(
     entity_name: str,
     log_to_wandb: bool,
     base_model_name: str,
-    ref_model_name: str
+    ref_model_name: str,
+    task_name: str,
 ):
 
     # load the config file
@@ -27,9 +28,9 @@ def main(
 
     if experiment_name is None:
         if base_model_name is None:
-            experiment_name = datetime.now().strftime("%m%d%y%H%M%S")
+            experiment_name = task_name + datetime.now().strftime("%m%d%y%H%M%S")
         else:
-            experiment_name = base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
+            experiment_name = task_name + base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
             config["alg"]["policy"]["args"]["model_name"] = base_model_name
             config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
 
@@ -99,6 +100,11 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
+        "--task_name",
+        type=str,
+        help="Task name e.g. daily dialogue",
+    )
+    parser.add_argument(
         "--log_to_wandb", action="store_true", help="Whether to use wandb logging"
     )
     args = parser.parse_args()
@@ -111,5 +117,6 @@ if __name__ == "__main__":
         args.entity_name,
         args.log_to_wandb,
         args.base_model_name,
-        args.ref_model_name
+        args.ref_model_name,
+        args.task_name,
     )
