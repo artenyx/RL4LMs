@@ -10,6 +10,10 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
+task_name_dict = {"imdb_text_continuation": "imdb_",
+                  "dailydialogue": "dd_"}
+
+
 def main(
     config_path: str,
     project_name: str,
@@ -28,9 +32,9 @@ def main(
 
     if experiment_name is None:
         if base_model_name is None:
-            experiment_name = task_name + datetime.now().strftime("%m%d%y%H%M%S")
+            experiment_name = task_name_dict[task_name] + datetime.now().strftime("%m%d%y%H%M%S")
         else:
-            experiment_name = task_name + base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
+            experiment_name = task_name_dict[task_name] + base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
             config["alg"]["policy"]["args"]["model_name"] = base_model_name
             config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
 
