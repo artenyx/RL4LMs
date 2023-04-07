@@ -20,14 +20,18 @@ def main(
     base_model_name: str,
     ref_model_name: str
 ):
-    if experiment_name is None:
-        experiment_name = base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
+
     # load the config file
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
 
-    config["alg"]["policy"]["args"]["model_name"] = base_model_name
-    config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
+    if experiment_name is None:
+        if base_model_name is None:
+            experiment_name = datetime.now().strftime("%m%d%y%H%M%S")
+        else:
+            experiment_name = base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
+            config["alg"]["policy"]["args"]["model_name"] = base_model_name
+            config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
 
     # load tracker
     tracker = Tracker(
@@ -86,12 +90,13 @@ if __name__ == "__main__":
         "--base_model_name",
         type=str,
         help="Base model hf name",
-        default="gpt2"
+        default=None,
     )
     parser.add_argument(
         "--ref_model_name",
         type=str,
-        help="Reference model hf name"
+        help="Ref model hf name",
+        default=None,
     )
     parser.add_argument(
         "--log_to_wandb", action="store_true", help="Whether to use wandb logging"
