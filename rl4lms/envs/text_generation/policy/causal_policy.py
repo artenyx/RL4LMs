@@ -41,7 +41,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         action_space: Discrete,
         lr_schedule: Schedule,
         model_name: str,
-        ref_model_name: str,
+        ref_model_name: str = None,
         optimizer_kwargs: Dict[str, Any] = {},
         weight_decay: float = 1e-6,
         use_sde: bool = None,
@@ -74,9 +74,11 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         )
 
         self._value_model = AutoModelForCausalLM.from_pretrained(model_name)
-        #self._ref_model = deepcopy(self._policy_model).eval()
-        self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name).eval()
-        print("*POLICY CHANGE SUCCESSFUL*")
+
+        if ref_model_name is None:
+            self._ref_model = deepcopy(self._policy_model).eval()
+        else:
+            self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name).eval()
 
         self._value_head = nn.Linear(
             self._value_model.config.hidden_size, 1, bias=False

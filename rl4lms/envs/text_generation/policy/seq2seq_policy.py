@@ -39,6 +39,7 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
         action_space: Discrete,
         lr_schedule: Schedule,
         model_name: str,
+        ref_model_name: str = None,
         optimizer_kwargs: Dict[str, Any] = {},
         weight_decay: float = 1e-6,
         use_sde: bool = None,
@@ -53,6 +54,7 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
             action_space,
             lr_schedule,
             model_name,
+            ref_model_name,
             optimizer_kwargs,
             weight_decay,
             use_sde,
@@ -63,13 +65,19 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
         )
         self.load_from_dict(state_dict)
 
-    def _build_model_heads(self, model_name: str):
+    def _build_model_heads(self, model_name: str, ref_model_name: str):
         self._policy_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         self._policy_model.__class__ = override_generation_routines(
             type(self._policy_model)
         )
 
         self._value_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+
+        if ref_model_name is None:
+            self._ref_model = deepcopy(self._policy_model).eval()
+        else:
+            self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name).eval()
+
         self._ref_model = deepcopy(self._policy_model).eval()
 
         self._value_head = nn.Linear(
