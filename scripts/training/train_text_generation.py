@@ -11,7 +11,7 @@ from rl4lms.envs.text_generation.training_utils import (
 )
 
 task_name_dict = {"imdb_text_continuation": "imdb_",
-                  "dialogue": "dd_",
+                  "dialog": "dd_",
                   "common_gen": "cg_",
                   "summarization": "summ_",
                   "narrative_qa": "nqa_",
