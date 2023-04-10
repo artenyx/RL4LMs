@@ -11,7 +11,11 @@ from rl4lms.envs.text_generation.training_utils import (
 )
 
 task_name_dict = {"imdb_text_continuation": "imdb_",
-                  "dailydialogue": "dd_"}
+                  "dialogue": "dd_",
+                  "common_gen": "cg_",
+                  "summarization": "summ_",
+                  "narrative_qa": "nqa_",
+                  }
 
 
 def main(
@@ -33,6 +37,9 @@ def main(
     if experiment_name is None:
         if base_model_name is None:
             experiment_name = task_name_dict[task_name] + datetime.now().strftime("%m%d%y%H%M%S")
+        elif ref_model_name is None:
+            experiment_name = task_name_dict[task_name] + base_model_name.replace("-", "") + "base_" + datetime.now().strftime("%m%d%y%H%M%S")
+            config["alg"]["policy"]["args"]["model_name"] = base_model_name
         else:
             experiment_name = task_name_dict[task_name] + base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
             config["alg"]["policy"]["args"]["model_name"] = base_model_name
