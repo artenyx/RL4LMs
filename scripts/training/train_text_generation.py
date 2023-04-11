@@ -35,16 +35,19 @@ def main(
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
 
+    base_model_str, ref_model_str = "", ""
+
+    if base_model_name is not None:
+        config["alg"]["policy"]["args"]["model_name"] = base_model_name
+        base_model_str = "_" + base_model_name.replace("-", "") + "base_"
+    if ref_model_name is not None:
+        config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
+        ref_model_str = "_" + ref_model_name.replace("-", "") + "ref_"
     if experiment_name is None:
-        if base_model_name is None:
-            experiment_name = task_name_dict[task_name] + datetime.now().strftime("%m%d%y%H%M%S")
-        elif ref_model_name is None:
-            experiment_name = task_name_dict[task_name] + base_model_name.replace("-", "") + "base_" + datetime.now().strftime("%m%d%y%H%M%S")
-            config["alg"]["policy"]["args"]["model_name"] = base_model_name
-        else:
-            experiment_name = task_name_dict[task_name] + base_model_name.replace("-", "") + "base_" + ref_model_name.replace("-", "") + "ref_" + datetime.now().strftime("%m%d%y%H%M%S")
-            config["alg"]["policy"]["args"]["model_name"] = base_model_name
-            config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
+        experiment_name = task_name_dict[task_name] + base_model_str + ref_model_str + datetime.now().strftime("%m%d%y%H%M%S")
+
+    if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
+        config["tokenizer"]["model_name"] = "gpt2"
 
     # load tracker
     tracker = Tracker(
