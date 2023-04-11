@@ -15,6 +15,7 @@ task_name_dict = {"imdb_text_continuation": "imdb_",
                   "common_gen": "cg_",
                   "summarization": "summ_",
                   "narrative_qa": "nqa_",
+                  "totto": "totto_",
                   }
 
 
