@@ -39,10 +39,10 @@ def main(
 
     if base_model_name is not None:
         config["alg"]["policy"]["args"]["model_name"] = base_model_name
-        base_model_str = "_" + base_model_name.replace("-", "") + "base_"
+        base_model_str = base_model_name.replace("-", "") + "base_"
     if ref_model_name is not None:
         config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
-        ref_model_str = "_" + ref_model_name.replace("-", "") + "ref_"
+        ref_model_str = ref_model_name.replace("-", "") + "ref_"
     if experiment_name is None:
         experiment_name = task_name_dict[task_name] + base_model_str + ref_model_str + datetime.now().strftime("%m%d%y%H%M%S")
 
