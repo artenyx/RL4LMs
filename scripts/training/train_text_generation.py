@@ -10,13 +10,19 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
-task_name_dict = {"imdb_text_continuation": "imdb_",
-                  "dialog": "dd_",
-                  "common_gen": "cg_",
-                  "summarization": "summ_",
-                  "narrative_qa": "nqa_",
-                  "totto": "totto_",
-                  }
+
+def shorten_task_name(task_name: str
+                      ) -> str:
+    task_shorts = {"imdb_text_continuation": "imdb",
+                   "dialog": "dd",
+                   "common_gen": "cg",
+                   "summarization": "summ",
+                   "narrative_qa": "nqa",
+                   "iwslt2017": "iwslt",
+                   }
+    task_name = task_shorts[task_name] if task_name in list(task_shorts) else task_name
+    task_name += "_"
+    return task_name
 
 
 def main(
@@ -44,7 +50,7 @@ def main(
         config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
         ref_model_str = ref_model_name.replace("-", "") + "ref_"
     if experiment_name is None:
-        experiment_name = task_name_dict[task_name] + base_model_str + ref_model_str + datetime.now().strftime("%m%d%y%H%M%S")
+        experiment_name = shorten_task_name(task_name) + base_model_str + ref_model_str + datetime.now().strftime("%m%d%y%H%M%S")
 
     if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
         config["tokenizer"]["model_name"] = "gpt2"
