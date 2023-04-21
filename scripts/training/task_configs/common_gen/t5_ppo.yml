@@ -82,7 +82,7 @@ train_evaluation:
   eval_batch_size: 20
   n_iters: 200
   eval_every: 20
-  save_every: 1
+  save_every: 20
   metrics:
     - id: meteor
       args: {}
