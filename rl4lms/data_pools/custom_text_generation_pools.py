@@ -449,7 +449,7 @@ class IWSLT2017EnDe(TextGenPool):
     @classmethod
     def get_dataset(cls, split: str):
         dataset = load_dataset(
-            "iwslt2017", "iwslt2017-de-en", ignore_verifications=True)
+            "iwslt2017", "iwslt2017-de-en", ignore_verifications=True, streaming=True)
         return dataset[split]
 
     @classmethod
