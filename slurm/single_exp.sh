@@ -13,7 +13,7 @@ elif [[ "$base_model_name" == *t5* ]]; then
   args+=("--config_path scripts/training/task_configs/${1}/t5_ppo.yml")
 fi
 
-if [ -z "$4" ]; then
+if [ -z "$4" ] || [ "$4" != NONE ]; then
   args+=("--experiment_name $experiment_name")
 fi
 
