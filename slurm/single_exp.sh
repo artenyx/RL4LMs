@@ -17,7 +17,7 @@ if [ -z "$4" ] || [ "$4" != NONE ]; then
   args+=("--experiment_name $experiment_name")
 fi
 
-if [ -z "$5" ]; then
+if [ -z "$5" ] || [ "$4" != NONE ]; then
   args+=("--gamma $gamma")
 fi
 
