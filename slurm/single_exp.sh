@@ -13,11 +13,11 @@ elif [[ "$base_model_name" == *t5* ]]; then
   args+=("--config_path scripts/training/task_configs/${1}/t5_ppo.yml")
 fi
 
-if [ -z "$4" ] || [ "$4" != NONE ]; then
+if [ -n "$4" ] && [ "$4" != NONE ]; then
   args+=("--experiment_name $experiment_name")
 fi
 
-if [ -z "$5" ] || [ "$4" != NONE ]; then
+if [ -n "$5" ] && [ "$5" != NONE ]; then
   args+=("--gamma $gamma")
 fi
 
@@ -27,4 +27,5 @@ args+=("--base_path_to_store_results /share/data/kartik-collab/geraldkwhite/" \
 "--ref_model_name $ref_model_name" \
 "--task_name $task_name")
 
-WANDB_API_KEY=92a8247f01352422f27fab17382f1f897dd4f745  python scripts/training/train_text_generation.py ${args[@]}
+#WANDB_API_KEY=92a8247f01352422f27fab17382f1f897dd4f745  python scripts/training/train_text_generation.py ${args[@]}
+echo ${args[@]}
