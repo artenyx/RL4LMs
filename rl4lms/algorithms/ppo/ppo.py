@@ -129,6 +129,7 @@ class PPO(OnPolicyAlgorithm):
             ),
         )
 
+        print("**GAMMA = " + gamma + "**")
         # Sanity check, otherwise it will lead to noisy gradient and NaN
         # because of the advantage normalization
         if normalize_advantage:

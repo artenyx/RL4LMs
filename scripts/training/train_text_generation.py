@@ -35,6 +35,7 @@ def main(
     base_model_name: str,
     ref_model_name: str,
     task_name: str,
+    gamma: float,
 ):
 
     # load the config file
@@ -54,6 +55,9 @@ def main(
 
     if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
         config["tokenizer"]["model_name"] = "gpt2"
+
+    if gamma is not None:
+        config["alg"]["args"]["gamma"] = gamma
 
     # load tracker
     tracker = Tracker(
@@ -126,7 +130,15 @@ if __name__ == "__main__":
         help="Task name e.g. daily dialogue",
     )
     parser.add_argument(
-        "--log_to_wandb", action="store_true", help="Whether to use wandb logging"
+        "--log_to_wandb",
+        action="store_true",
+        help="Whether to use wandb logging"
+    )
+    parser.add_argument(
+        "--gamma",
+        type=float,
+        help="gamma value",
+        default=None,
     )
     args = parser.parse_args()
 
@@ -140,4 +152,5 @@ if __name__ == "__main__":
         args.base_model_name,
         args.ref_model_name,
         args.task_name,
+        args.gamma,
     )
