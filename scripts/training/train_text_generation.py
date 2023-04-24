@@ -138,7 +138,7 @@ if __name__ == "__main__":
         "--gamma",
         type=float,
         help="gamma value",
-        default=None,
+        default=0.99,
     )
     args = parser.parse_args()
 

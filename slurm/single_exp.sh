@@ -4,6 +4,7 @@ task_name="$1"
 base_model_name="$2"
 ref_model_name="$3"
 experiment_name="$4"
+gamma="$5"
 
 args=()
 if [[ "$base_model_name" == *gpt2* ]]; then
@@ -14,6 +15,10 @@ fi
 
 if [ -z "$4" ]; then
   args+=("--experiment_name $experiment_name")
+fi
+
+if [ -z "$5" ]; then
+  args+=("--gamma $gamma")
 fi
 
 args+=('--base_path_to_store_results /share/data/kartik-collab/geraldkwhite/' \
