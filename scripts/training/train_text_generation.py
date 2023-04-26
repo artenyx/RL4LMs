@@ -42,6 +42,8 @@ def main(
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
 
+    dt = datetime.now().strftime("%m%d%y%H%M%S")
+    config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
     base_model_str, ref_model_str = "", ""
 
     if base_model_name is not None:
@@ -51,7 +53,7 @@ def main(
         config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
         ref_model_str = ref_model_name.replace("-", "") + "ref_"
     if experiment_name is None:
-        experiment_name = shorten_task_name(task_name) + base_model_str + ref_model_str + datetime.now().strftime("%m%d%y%H%M%S")
+        experiment_name = shorten_task_name(task_name) + base_model_str + ref_model_str + dt
 
     if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
         config["tokenizer"]["model_name"] = "gpt2"
