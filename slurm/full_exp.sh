@@ -42,7 +42,7 @@ fi
 
 for ref_model_name in ${ref_models[@]}
 do
-  echo sbatch -p gpu -C 24g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$gamma"
+  sbatch -p gpu -C 24g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$gamma"
 done
 
 
