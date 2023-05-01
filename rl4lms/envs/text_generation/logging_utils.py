@@ -63,6 +63,7 @@ class Tracker:
                 name=self._experiment_name,
                 config=self._config,
                 id=self._config["wandb_id"],
+                group=self._config["wandb_group_id"],
                 resume="allow",
             )
 

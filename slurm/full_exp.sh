@@ -5,9 +5,9 @@ base_model_sm="$2"
 run_sm_lg_exp="$3"
 
 if [ -n "$4" ]; then
-  gamma="$4"
+  group="$4"
 else
-  gamma=NONE
+  group=NONE
 fi
 
 #setting base model
@@ -42,11 +42,5 @@ fi
 
 for ref_model_name in ${ref_models[@]}
 do
-  sbatch -p gpu -C 24g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$gamma"
+  sbatch -p gpu -C 24g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group"
 done
-
-
-#sbatch -p gpu -C 24g slurm/single_exp.sh $task_name t5-base t5-small NONE NONE
-#sbatch -p gpu -C 24g slurm/single_exp.sh common_gen t5-base t5-small NONE NONE
-#sbatch -p gpu -C 24g slurm/single_exp.sh common_gen t5-base t5-small NONE NONE
-#sbatch -p gpu -C 24g slurm/single_exp.sh common_gen t5-base t5-small NONE NONE

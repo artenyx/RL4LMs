@@ -35,7 +35,7 @@ def main(
     base_model_name: str,
     ref_model_name: str,
     task_name: str,
-    gamma: float,
+    group: str,
 ):
 
     # load the config file
@@ -44,6 +44,7 @@ def main(
 
     dt = datetime.now().strftime("%m%d%y%H%M%S")
     config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
+    config["wandb_group_id"] = group
     base_model_str, ref_model_str = "", ""
 
     if base_model_name is not None:
@@ -57,9 +58,6 @@ def main(
 
     if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
         config["tokenizer"]["model_name"] = "gpt2"
-
-    if gamma is not None:
-        config["alg"]["args"]["gamma"] = gamma
 
     # load tracker
     tracker = Tracker(
@@ -137,9 +135,9 @@ if __name__ == "__main__":
         help="Whether to use wandb logging"
     )
     parser.add_argument(
-        "--gamma",
-        type=float,
-        help="gamma value",
+        "--group",
+        type=str,
+        help="wandb group name",
         default=None,
     )
     args = parser.parse_args()
@@ -154,5 +152,5 @@ if __name__ == "__main__":
         args.base_model_name,
         args.ref_model_name,
         args.task_name,
-        args.gamma,
+        args.group,
     )
