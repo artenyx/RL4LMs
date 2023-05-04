@@ -242,7 +242,7 @@ def wrap_onpolicy_alg(
                     # kl_div = raw_log_probs - ref_log_probs
                     full_logits = F.log_softmax(full_logits, dim=1)
                     ref_full_logits = F.softmax(ref_full_logits, dim=1)
-                    kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits)
+                    kl_div = nn.KLDivLoss(reduction="batchmean")(full_logits, ref_full_logits)
                     kl_rewards = -1 * self._kl_controller.kl_coeff * kl_div
 
                 # step into env to get rewards
