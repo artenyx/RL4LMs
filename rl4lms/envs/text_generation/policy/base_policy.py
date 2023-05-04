@@ -51,6 +51,8 @@ class PolicyOutput:
     entropy: torch.tensor
     # cached policy activations for sequential forward passes
     past_model_kwargs: torch.tensor
+    # logits over entire token space
+    full_logits: torch.tensor
 
 
 @dataclass
@@ -63,6 +65,8 @@ class RefPolicyOutput:
     log_probs: torch.tensor
     # cached policy activations for sequential forward passes
     past_model_kwargs: torch.tensor
+    # logits over entire token space
+    full_logits: torch.tensor
 
 
 @dataclass

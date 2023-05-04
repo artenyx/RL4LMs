@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Tuple, Type
 
 import numpy as np
 import torch
+from torch import nn
 from stable_baselines3.common.buffers import DictRolloutBuffer, RolloutBuffer
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
@@ -193,10 +194,11 @@ def wrap_onpolicy_alg(
                     policy_outputs: PolicyOutput = self.policy.forward_policy(
                         **policy_kwargs
                     )
-                    raw_log_probs, log_probs, policy_past_state = (
+                    raw_log_probs, log_probs, policy_past_state, full_logits = (
                         policy_outputs.raw_log_probs,
                         policy_outputs.log_probs,
                         policy_outputs.past_model_kwargs,
+                        policy_outputs.full_logits,
                     )
 
                     # sanity check
@@ -224,9 +226,10 @@ def wrap_onpolicy_alg(
                             obs_tensor, actions_tensor, ref_past_state
                         )
                     )
-                    ref_log_probs, ref_past_state = (
+                    ref_log_probs, ref_past_state, ref_full_logits = (
                         ref_policy_outputs.log_probs,
                         ref_policy_outputs.past_model_kwargs,
+                        ref_policy_outputs.full_logits,
                     )
 
                     # sanity check
@@ -235,7 +238,8 @@ def wrap_onpolicy_alg(
                     ), "Infinite values in log probs"
 
                     # compute KL rewards
-                    kl_div = raw_log_probs - ref_log_probs
+                    #kl_div = raw_log_probs - ref_log_probs
+                    kl_div = nn.CrossEntropyLoss(full_logits, ref_full_logits).item()
                     kl_rewards = -1 * self._kl_controller.kl_coeff * kl_div
 
                 # step into env to get rewards
