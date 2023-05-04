@@ -238,7 +238,7 @@ def wrap_onpolicy_alg(
                     ), "Infinite values in log probs"
 
                     # compute KL rewards
-                    #kl_div = raw_log_probs - ref_log_probs
+                    # kl_div = raw_log_probs - ref_log_probs
                     kl_div = nn.CrossEntropyLoss(full_logits, ref_full_logits).item()
                     kl_rewards = -1 * self._kl_controller.kl_coeff * kl_div
 

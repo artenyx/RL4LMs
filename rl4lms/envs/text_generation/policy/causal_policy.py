@@ -166,6 +166,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
             log_probs=log_prob,
             entropy=entropy,
             past_model_kwargs=past_model_kwargs,
+            full_logits=next_token_logits,
         )
 
         return policy_outputs
