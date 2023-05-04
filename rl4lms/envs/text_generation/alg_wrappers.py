@@ -239,7 +239,7 @@ def wrap_onpolicy_alg(
 
                     # compute KL rewards
                     # kl_div = raw_log_probs - ref_log_probs
-                    kl_div = nn.CrossEntropyLoss()(full_logits, ref_full_logits)
+                    kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits)
                     kl_rewards = -1 * self._kl_controller.kl_coeff * kl_div
 
                 # step into env to get rewards
