@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Tuple, Type
 import numpy as np
 import torch
 from torch import nn
+import torch.nn.functional as F
 from stable_baselines3.common.buffers import DictRolloutBuffer, RolloutBuffer
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
@@ -239,6 +240,8 @@ def wrap_onpolicy_alg(
 
                     # compute KL rewards
                     # kl_div = raw_log_probs - ref_log_probs
+                    full_logits = F.log_softmax(full_logits, dim=1)
+                    ref_full_logits = F.softmax(ref_full_logits, dim=1)
                     kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits)
                     kl_rewards = -1 * self._kl_controller.kl_coeff * kl_div
 
