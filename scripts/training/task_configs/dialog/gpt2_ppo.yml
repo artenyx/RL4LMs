@@ -43,7 +43,7 @@ alg:
       apply_model_parallel: True
       generation_kwargs:
         do_sample: True
-        top_p: 0.9
+        top_k: 20
         min_length: 2
         max_new_tokens: 20
       
