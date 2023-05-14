@@ -239,12 +239,12 @@ def wrap_onpolicy_alg(
                     ), "Infinite values in log probs"
 
                     # compute KL rewards (original)
-                    # kl_div = raw_log_probs - ref_log_probs
+                    kl_div = raw_log_probs - ref_log_probs
 
                     # compute KL rewards (True KL Div)
-                    full_logits = F.log_softmax(full_logits, dim=1)
-                    ref_full_logits = F.softmax(ref_full_logits, dim=1)
-                    kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits).sum(dim=1)
+                    # full_logits = F.log_softmax(full_logits, dim=1)
+                    # ref_full_logits = F.softmax(ref_full_logits, dim=1)
+                    # kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits).sum(dim=1)
 
                     # compute KL rewards (KD - Cross Entropy)
                     # ref_full_logits = F.softmax(ref_full_logits, dim=1)
