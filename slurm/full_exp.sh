@@ -42,7 +42,7 @@ fi
 
 for ref_model_name in ${ref_models[@]}
 do
-  sbatch -p speech-gpu -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group"
+  sbatch -p contrib-gpu-long -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group"
 done
 
 # speech-gpu
