@@ -40,9 +40,17 @@ elif [[ "$base_model_name" == *t5* ]]; then
   fi
 fi
 
+#setting correct gpu partition
+if [[ "$group" == *ENVS* ]] || [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
+else
+  partition=speech-gpu
+fi
+
+
+
 for ref_model_name in ${ref_models[@]}
 do
-  sbatch -p contrib-gpu-long -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group"
+  sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group"
 done
 
 # speech-gpu
