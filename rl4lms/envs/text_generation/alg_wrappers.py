@@ -107,7 +107,7 @@ def wrap_onpolicy_alg(
             norm_reward: bool = False,
         ):
             alg_kwargs["tracker"] = tracker
-            # self.kl_type = alg_kwargs["kl_type"]
+            self.kl_type = alg_kwargs["kl_type"]
             super().__init__(**alg_kwargs)
             self._kl_controller = KLController(kl_coeff, target_kl)
             self.tracker = tracker
@@ -239,17 +239,20 @@ def wrap_onpolicy_alg(
                         torch.isfinite(ref_log_probs)
                     ), "Infinite values in log probs"
 
-                    # compute KL rewards (original)
-                    kl_div = raw_log_probs - ref_log_probs
-
-                    # compute KL rewards (True KL Div)
-                    # full_logits = F.log_softmax(full_logits, dim=1)
-                    # ref_full_logits = F.softmax(ref_full_logits, dim=1)
-                    # kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits).sum(dim=1)
-
-                    # compute KL rewards (KD - Cross Entropy)
-                    # ref_full_logits = F.softmax(ref_full_logits, dim=1)
-                    # kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits)
+                    if self.kl_type == "standard":
+                        # compute KL rewards (original)
+                        kl_div = raw_log_probs - ref_log_probs
+                    elif self.kl_type == "full_kl":
+                        # compute KL rewards (True KL Div)
+                        full_logits = F.log_softmax(full_logits, dim=1)
+                        ref_full_logits = F.softmax(ref_full_logits, dim=1)
+                        kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits).sum(dim=1)
+                    elif self.kl_type == "cross_entropy":
+                        # compute KL rewards (KD - Cross Entropy)
+                        ref_full_logits = F.softmax(ref_full_logits, dim=1)
+                        kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits)
+                    else:
+                        raise Exception("Error with kl_type value. Not one of the designed values.")
 
                     kl_rewards = -1 * self._kl_controller.kl_coeff * kl_div
 

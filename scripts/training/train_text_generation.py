@@ -36,6 +36,7 @@ def main(
     ref_model_name: str,
     task_name: str,
     group: str,
+    kl_type: str,
 ):
 
     # load the config file
@@ -45,8 +46,9 @@ def main(
     dt = datetime.now().strftime("%m%d%y%H%M%S")
     config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
     config["wandb_group_id"] = group
-    base_model_str, ref_model_str = "", ""
+    config["alg"]["kl_type"] = kl_type
 
+    base_model_str, ref_model_str = "", ""
     if base_model_name is not None:
         config["alg"]["policy"]["args"]["model_name"] = base_model_name
         base_model_str = base_model_name.replace("-", "") + "base_"
@@ -58,6 +60,7 @@ def main(
 
     if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
         config["tokenizer"]["model_name"] = "gpt2"
+
 
     # load tracker
     tracker = Tracker(
@@ -140,6 +143,13 @@ if __name__ == "__main__":
         help="wandb group name",
         default=None,
     )
+    parser.add_argument(
+        "--kl_type",
+        type=str,
+        help="type of KL divergence in reward to use",
+        default="standard",
+        choices=["standard", "full_kl", "cross_entropy"],
+    )
     args = parser.parse_args()
 
     main(
@@ -153,4 +163,5 @@ if __name__ == "__main__":
         args.ref_model_name,
         args.task_name,
         args.group,
+        args.kl_type,
     )
