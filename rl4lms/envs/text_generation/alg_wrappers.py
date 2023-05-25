@@ -107,6 +107,7 @@ def wrap_onpolicy_alg(
             norm_reward: bool = False,
         ):
             alg_kwargs["tracker"] = tracker
+            # self.kl_type = alg_kwargs["kl_type"]
             super().__init__(**alg_kwargs)
             self._kl_controller = KLController(kl_coeff, target_kl)
             self.tracker = tracker
