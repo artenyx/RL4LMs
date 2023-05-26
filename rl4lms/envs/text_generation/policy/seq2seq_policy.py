@@ -168,8 +168,14 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
         )
 
         policy_output = PolicyOutput(
-            actions, log_prob, log_prob, entropy, past_model_kwargs
+            actions=actions,
+            raw_log_probs=log_prob,
+            log_probs=log_prob,
+            entropy=entropy,
+            past_model_kwargs=past_model_kwargs,
+            full_logits=next_token_logits,
         )
+
 
         return policy_output
 
@@ -495,7 +501,12 @@ class MaskedSeq2SeqLMActorCriticPolicy(
         )
 
         policy_output = PolicyOutput(
-            actions, raw_log_probs, log_probs, entropy, past_model_kwargs
+            actions=actions,
+            raw_log_probs=raw_log_probs,
+            log_probs=log_probs,
+            entropy=entropy,
+            past_model_kwargs=past_model_kwargs,
+            full_logits=next_token_logits,
         )
 
         return policy_output
