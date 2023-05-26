@@ -334,7 +334,7 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
             dim=-1,
         )
 
-        ref_policy_output = RefPolicyOutput(log_prob, past_model_kwargs)
+        ref_policy_output = RefPolicyOutput(log_prob, past_model_kwargs, next_token_logits)
 
         return ref_policy_output
 
