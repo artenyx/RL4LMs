@@ -39,10 +39,11 @@ elif [[ "$base_model_name" == *t5* ]]; then
 fi
 
 #setting correct gpu partition
-if [[ "$group" == *ENVS* ]] || [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
-else
-  partition=speech-gpu
-fi
+#if [[ "$group" == *ENVS* ]] || [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
+#else
+#  partition=speech-gpu
+#fi
+partition=contrib-gpu-long
 
 for ref_model_name in ${ref_models[@]}
 do
