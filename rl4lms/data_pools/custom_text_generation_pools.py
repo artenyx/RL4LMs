@@ -164,7 +164,7 @@ class Xsum(TextGenPool):
         for ix, item in enumerate(dataset_split):
             sample = Sample(id=f"{split}_{ix}",
                             prompt_or_input_text=item["document"] +
-                            prompt_suffix,
+                                                 prompt_suffix,
                             references=[item["target"]]
                             )
             samples.append(sample)
@@ -194,12 +194,12 @@ class CNNDailyMail(TextGenPool):
 
             sample = Sample(id=f"{split}_{ix}",
                             prompt_or_input_text=prompt_prefix +
-                            item["article"] + prompt_suffix,
+                                                 item["article"] + prompt_suffix,
                             references=[item["highlights"]]
                             )
             samples.append(sample)
 
-            if max_size is not None and ix == (max_size-1):
+            if max_size is not None and ix == (max_size - 1):
                 break
 
         pool_instance = cls(samples)
@@ -210,6 +210,7 @@ class IMDB(TextGenPool):
     """
     IMDB Dataset for sentiment continuation task
     """
+
     @classmethod
     def prepare(cls, split: str):
         dataset = load_dataset("imdb")
@@ -224,7 +225,6 @@ class IMDB(TextGenPool):
 
         samples = []
         for ix, text in enumerate(dataset_split["text"]):
-
             # here we consider 50% of tokens as prompt
             prompt_text = text.split(" ")
             prompt_text = " ".join(prompt_text[:int(len(prompt_text) * 0.5)])
@@ -242,6 +242,7 @@ class IMDBForSeq2Seq(TextGenPool):
     """
     IMDB Dataset in seq2seq format to train supervised generator
     """
+
     @classmethod
     def prepare(cls, split: str, positive_ratio: int = 1.0):
         dataset = load_dataset("imdb")
@@ -365,9 +366,8 @@ class WMT(TextGenPool):
         for ix, item in tqdm(enumerate(dataset),
                              desc="Preparing dataset",
                              total=len(dataset)):
-
             prompt = prompt_prefix + \
-                item["translation"][source_language] + prompt_suffix
+                     item["translation"][source_language] + prompt_suffix
             sample = Sample(id=f"{split}_{ix}",
                             prompt_or_input_text=prompt,
                             references=[item["translation"][target_language]]
@@ -396,9 +396,8 @@ class WMT14PreprocessedEnDe(TextGenPool):
         for ix, item in tqdm(enumerate(dataset),
                              desc="Preparing dataset",
                              total=len(dataset)):
-
             prompt = prompt_prefix + \
-                item["translation"]["en"] + prompt_suffix
+                     item["translation"]["en"] + prompt_suffix
             sample = Sample(id=f"{split}_{ix}",
                             prompt_or_input_text=prompt,
                             references=[item["translation"]["de"]]
@@ -432,9 +431,8 @@ class WMT16NewsOnlyDatasetEnDe(TextGenPool):
         for ix, item in tqdm(enumerate(dataset),
                              desc="Preparing dataset",
                              total=len(dataset)):
-
             prompt = prompt_prefix + \
-                item["translation"]["en"] + prompt_suffix
+                     item["translation"]["en"] + prompt_suffix
             sample = Sample(id=f"{split}_{ix}",
                             prompt_or_input_text=prompt,
                             references=[item["translation"]["de"]]
@@ -464,9 +462,8 @@ class IWSLT2017EnDe(TextGenPool):
         for ix, item in tqdm(enumerate(dataset),
                              desc="Preparing dataset",
                              total=len(dataset)):
-
             prompt = prompt_prefix + \
-                item["translation"]["en"] + prompt_suffix
+                     item["translation"]["en"] + prompt_suffix
             sample = Sample(id=f"{split}_{ix}",
                             prompt_or_input_text=prompt,
                             references=[item["translation"]["de"]]
@@ -552,6 +549,7 @@ class CRD3DialogueGeneration(TextGenPool):
 
 class DailyDialog(TextGenPool):
     EOU_TOKEN = "<EOU>"
+
     @classmethod
     def prepare(cls, split: str, context_size: int):
         split = CommonGen.gen_split_name(split)
@@ -564,11 +562,11 @@ class DailyDialog(TextGenPool):
                                                   item["emotion"],
                                                   item["act"]):
                 if len(contexts) >= context_size:
-                    context = DailyDialog.EOU_TOKEN.join(contexts[-context_size:]) 
+                    context = DailyDialog.EOU_TOKEN.join(contexts[-context_size:])
                     context += " " + DailyDialog.EOU_TOKEN
                     target = utterance + DailyDialog.EOU_TOKEN
-                    sample = Sample(id=utterance_id, 
-                                    prompt_or_input_text=context, 
+                    sample = Sample(id=utterance_id,
+                                    prompt_or_input_text=context,
                                     references=[target],
                                     meta_data={
                                         "emotion": [emotion],
@@ -582,9 +580,30 @@ class DailyDialog(TextGenPool):
         return dp_instance
 
 
+# NEW DATASETS
+
+
+class MyDataPool(TextGenPool):
+    @classmethod
+    def prepare(cls, split: str):
+        split = CommonGen.gen_split_name(split)
+        #dataset = dataset = load_dataset("vicgalle/alpaca-gpt4", split=split)
+        dataset = load_dataset("QingyiSi/Alpaca-CoT", "alpaca_gpt4_data.json")
+        samples = []
+        for ix, item in enumerate(dataset):
+            print(item)
+            sample = Sample(id=f"{split}_{ix}",
+                            prompt_or_input_text=item["instruction"],
+                            references=[item["output"]]
+                            )
+            samples.append(sample)
+        pool_instance = cls(samples)
+        return pool_instance
+
+
 if __name__ == "__main__":
     from transformers import AutoTokenizer
     import numpy as np
-    dp = DailyDialog.prepare("val", 5)
+
+    dp = MyDataPool.prepare("train")
     print(dp[0])
-    

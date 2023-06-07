@@ -159,7 +159,7 @@ def wrap_onpolicy_alg(
             # generate text using the model
             obs_tensor = obs_as_tensor(current_obs, self.device)
             generation_inputs = self.policy.get_inputs_for_generation(obs_tensor)
-            gen_output = self.policy.generate_from_ref(
+            gen_output = self.policy.generate(
                 input_ids=generation_inputs.inputs,
                 attention_mask=generation_inputs.attention_masks,
                 tokenizer=tokenizer,
