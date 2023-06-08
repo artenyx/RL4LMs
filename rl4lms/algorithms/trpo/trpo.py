@@ -101,6 +101,8 @@ class TRPO(OnPolicyAlgorithm):
         seed: Optional[int] = None,
         device: Union[th.device, str] = "cuda",
         _init_setup_model: bool = True,
+        kl_type: Optional[str] = None,
+        off_policy: Optional[bool] = None,
     ):
 
         super().__init__(
