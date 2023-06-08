@@ -663,5 +663,117 @@ class MaskedSeq2SeqLMActorCriticPolicy(
         )
         return gen_output
 
+    def generate_from_ref(
+        self,
+        tokenizer: AutoTokenizer,
+        texts: List[str] = None,
+        max_prompt_length: int = None,
+        input_ids: torch.tensor = None,
+        attention_mask: torch.tensor = None,
+        gen_kwargs: Dict[str, Any] = None,
+    ):
+
+        # if it different from rollout gen kwargs
+        if gen_kwargs is None:
+            gen_kwargs = self._generation_kwargs
+
+        # switch to eval
+        self._ref_model.eval()
+        self.logits_processor.reset()
+
+        if (
+            input_ids is None
+            and attention_mask is None
+            and texts is not None
+            and max_prompt_length is not None
+        ):
+            prev_truncation_side = tokenizer.truncation_side
+            tokenizer.truncation_side = self._prompt_truncation_side
+            encodings = tokenizer(
+                texts,
+                padding="max_length",
+                max_length=max_prompt_length,
+                return_tensors="pt",
+                return_attention_mask=True,
+                truncation=True,
+            )
+            input_ids = encodings.input_ids
+            attention_mask = encodings.attention_mask
+            tokenizer.truncation_side = prev_truncation_side
+
+        self.logits_processor.attention_mask = attention_mask.to(
+            self.get_policy_first_device()
+        )
+        self.logits_processor.all_special_ids = self.all_special_ids = (
+            torch.tensor(
+                tokenizer.all_special_ids,
+                dtype=input_ids.dtype,
+                device=self.get_policy_first_device(),
+            )
+            .unsqueeze(0)
+            .expand((input_ids.size(0), -1))
+        )
+
+        # if min_length argument is set and if policy is not a seq2seq LM (ie. causal LM)
+        # then it has to be adjusted to input_size + min_length
+        if (
+            "min_length" in gen_kwargs.keys()
+            and not unwrap_model(self._ref_model).config.is_encoder_decoder
+        ):
+            generation_kwargs_ = deepcopy(gen_kwargs)
+            generation_kwargs_["min_length"] = (
+                input_ids.shape[1] + gen_kwargs["min_length"]
+            )
+        else:
+            generation_kwargs_ = gen_kwargs
+
+        # generate
+        gen_output = unwrap_model(self._ref_model).generate(
+            inputs=input_ids.to(self.get_policy_first_device()),
+            attention_mask=attention_mask.to(self.get_policy_first_device()),
+            return_dict_in_generate=True,
+            output_scores=True,
+            logits_processor=[self.logits_processor],
+            **generation_kwargs_
+        )
+
+        # number of tokens generated
+        seq_length = len(gen_output["scores"])
+
+        # get only the generated text (excluding prompt)
+        gen_tokens = gen_output["sequences"][:, -seq_length:]
+
+        # to texts
+        gen_texts = [
+            tokenizer.decode(output, skip_special_tokens=True)
+            for output in gen_tokens.tolist()
+        ]
+
+        # extract scores (logits)
+        step_wise_logprobs = []
+        step_wise_actions = []
+        action_masks = []
+        for step, logits in enumerate(gen_output["scores"]):
+            raw_logits, processed_logits = logits
+            actions_at_step = gen_tokens[:, step]
+            distribution = Categorical(logits=raw_logits)
+            log_probs = distribution.log_prob(actions_at_step)
+            step_wise_logprobs.append(log_probs)
+            step_wise_actions.append(actions_at_step)
+
+            # TBD: workaround due to beam search not returning processed logits yet
+            if processed_logits is not None:
+                # recalculating action masks
+                action_mask = ~torch.isneginf(processed_logits)
+                # assert torch.sum(~action_mask.long()).item() != 0
+                # assert torch.all(torch.isfinite(Categorical(logits=processed_logits).log_prob(actions_at_step)))
+                action_masks.append(action_mask)
+
+        gen_output = GenerationOutputs(
+            step_wise_logprobs, step_wise_actions, gen_tokens, gen_texts, action_masks
+        )
+        return gen_output
+
+
     def update_mask_model(self):
         self._mask_model = deepcopy(self._policy_model).eval()
