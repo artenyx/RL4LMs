@@ -15,6 +15,12 @@ else
   kl_type=NONE
 fi
 
+if [ -n "$5" ]; then
+  off_policy="$5"
+else
+  off_policy=NONE
+fi
+
 #setting base model
 if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]]; then
   if [[ $base_model_sm == true ]]; then
@@ -47,7 +53,7 @@ partition=contrib-gpu-long
 
 for ref_model_name in ${ref_models[@]}
 do
-  sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type"
+  sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"
   # bash single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" # for testing
 done
 

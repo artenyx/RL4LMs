@@ -37,6 +37,7 @@ def main(
     task_name: str,
     group: str,
     kl_type: str,
+    off_policy: bool,
 ):
 
     # load the config file
@@ -47,7 +48,7 @@ def main(
     config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
     config["wandb_group_id"] = group
     config["alg"]["args"]["kl_type"] = kl_type
-    config["alg"]["args"]["off_policy"] = True
+    config["alg"]["args"]["off_policy"] = off_policy
 
     base_model_str, ref_model_str = "", ""
     if base_model_name is not None:
@@ -145,11 +146,10 @@ if __name__ == "__main__":
         default=None,
     )
     parser.add_argument(
-        "--kl_type",
-        type=str,
-        help="type of KL divergence in reward to use",
-        default="standard",
-        choices=["standard", "full_kl", "cross_entropy"],
+        "--off_policy",
+        type=bool,
+        help="whether to do off policy learning or not",
+        default=False,
     )
     args = parser.parse_args()
 
@@ -165,4 +165,5 @@ if __name__ == "__main__":
         args.task_name,
         args.group,
         args.kl_type,
+        args.off_policy,
     )
