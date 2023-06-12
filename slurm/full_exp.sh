@@ -53,8 +53,8 @@ partition=contrib-gpu-long
 
 for ref_model_name in ${ref_models[@]}
 do
-  sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"
-  # bash single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" # for testing
+  # sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"
+  bash single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"# for testing
 done
 
 # speech-gpu
