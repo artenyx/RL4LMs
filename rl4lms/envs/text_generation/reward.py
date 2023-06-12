@@ -606,6 +606,20 @@ class IntentAccuracy(BatchedRewardFunction):
         rewards[done_ixs] += self._intent_coeff * np.array(scores)
         return rewards.tolist()
 
+class HumanJudgement(RewardFunction):
+    def __init__(self, *args) -> None:
+        super().__init__()
+
+    def __call__(self, prev_observation: Observation,
+                 action: int,
+                 current_observation: Observation,
+                 done: bool,
+                 meta_info: Dict[str, Any] = None) -> float:
+        if done:
+            reward =None
+            return reward
+        return 0
+
 
 if __name__ == "__main__":
     predictions = "hello there general kenobi"

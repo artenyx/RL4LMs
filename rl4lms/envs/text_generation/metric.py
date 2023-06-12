@@ -718,6 +718,51 @@ class IntentAccuracyDailyDialog(BaseMetric):
         metric_dict = {"intent/accuracy": (matching_scores.tolist(), intent_accuracy)}
         return metric_dict
 
+class HumanJudgement_DebertaMetric(BaseMetric):
+    def __init__(self) -> None:
+        super().__init__()
+        self._tokenizer = AutoTokenizer.from_pretrained(
+            "OpenAssistant/reward-model-deberta-v3-large-v2"
+        )
+        self._model = AutoModelForSequenceClassification.from_pretrained(
+            "OpenAssistant/reward-model-deberta-v3-large-v2"
+        )
+        self._device = "cuda" if torch.cuda.is_available() else "cpu"
+        self._device = f"cuda:{torch.cuda.device_count() - 1}"
+        self._model = self._model.to(self._device)
+
+    def compute(
+            self,
+            prompt_texts: List[str],
+            generated_texts: List[str],
+            reference_texts: List[List[str]],
+            meta_infos: List[Dict[str, Any]] = None,
+            model: PreTrainedModel = None,
+            split_name: str = None,
+    ) -> Tuple[List[float], float]:
+        def get_input_for_classifier(prompt, generated_text):
+            input_text = prompt + generated_text
+            return input_text
+
+        # we have to extract the history utterances
+        input_texts = [
+            get_input_for_classifier(prompt, gen)
+            for prompt, gen in zip(prompt_texts, generated_texts)
+        ]
+
+        # tokenize
+        encoded = self._tokenizer(
+            input_texts, return_tensors="pt", truncation=True, padding=True
+        )
+
+        with torch.no_grad():
+            outputs = self._model(
+                input_ids=encoded.input_ids.to(self._device),
+                attention_mask=encoded.attention_mask.to(self._device),
+            )
+            metric_results = outputs.logits[0].cpu().detach()
+            metric_dict = {"human_judgement/deberta": (None, metric_results)}
+
 
 if __name__ == "__main__":
     prompt_texts = [""]
@@ -770,8 +815,12 @@ if __name__ == "__main__":
         ["The dog is the boy's cat.", "The dog eats the cat of the boy."],
         ["A boy is picking apples from trees."],
     ]
-    metric = CIDERMetric()
+    #metric = CIDERMetric()
+    #print(metric.compute(prompt_texts, gen_texts, reference_texts))
+
+    #metric = SpiceMetric()
+    #print(metric.compute(prompt_texts, gen_texts, reference_texts))
+
+    metric = HumanJudgement_DebertaMetric()
     print(metric.compute(prompt_texts, gen_texts, reference_texts))
 
-    metric = SpiceMetric()
-    print(metric.compute(prompt_texts, gen_texts, reference_texts))
