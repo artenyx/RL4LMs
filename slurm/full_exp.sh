@@ -20,7 +20,7 @@ if [ -n "$5" ]; then
 else
   off_policy=NONE
 fi
-
+echo off_policy
 #setting base model
 if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]]; then
   if [[ $base_model_sm == true ]]; then
