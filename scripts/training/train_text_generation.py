@@ -48,7 +48,7 @@ def main(
     config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
     config["wandb_group_id"] = group
     config["alg"]["args"]["kl_type"] = kl_type
-    config["alg"]["args"]["off_policy"] = off_policy
+    config["alg"]["args"]["off_policy"] = off_policyz
 
     base_model_str, ref_model_str = "", ""
     if base_model_name is not None:
@@ -144,6 +144,13 @@ if __name__ == "__main__":
         type=str,
         help="wandb group name",
         default=None,
+    )
+    parser.add_argument(
+        "--kl_type",
+        type=str,
+        help="type of KL divergence in reward to use",
+        default="standard",
+        choices=["standard", "full_kl", "cross_entropy"],
     )
     parser.add_argument(
         "--off_policy",
