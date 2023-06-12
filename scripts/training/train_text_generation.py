@@ -154,11 +154,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--off_policy",
-        type=bool,
+        type=str,
         help="whether to do off policy learning or not",
-        default=False,
+        default="false",
+        choices=["true", "false"]
     )
     args = parser.parse_args()
+    args.off_policy = args.off_policy == "true"
 
     main(
         args.config_path,
