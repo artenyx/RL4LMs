@@ -763,6 +763,46 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             metric_results = outputs.logits[0].cpu().detach()
             metric_dict = {"human_judgement/deberta": (None, metric_results)}
 
+class BERTScoreMetricDual(BaseMetric):
+    def __init__(self, language: str) -> None:
+        super().__init__()
+        self._metric = load_metric("bertscore")
+        self._language = language
+        # since models are loaded heavily on cuda:0, use the last one to avoid memory
+        self._last_gpu = f"cuda:{torch.cuda.device_count() - 1}"
+
+    def compute(
+        self,
+        prompt_texts: List[str],
+        generated_texts: List[str],
+        reference_texts: List[List[str]],
+        meta_infos: List[Dict[str, Any]] = None,
+        model: PreTrainedModel = None,
+        split_name: str = None,
+    ) -> Tuple[List[float], float]:
+        with torch.no_grad():
+            metric_results_ref = self._metric.compute(
+                predictions=generated_texts,
+                references=reference_texts,
+                lang=self._language,
+                device=self._last_gpu,
+            )
+            bert_scores_ref = metric_results_ref["f1"]
+            corpus_level_score_ref = np.mean(bert_scores_ref)
+
+            undesirable_texts = [example["undesirable"] for example in meta_infos]
+            metric_results_other = self._metric.compute(
+                predictions=generated_texts,
+                references=undesirable_texts,
+                lang=self._language,
+                device=self._last_gpu,
+            )
+            bert_scores_other = metric_results_other["f1"]
+            corpus_level_score_other = np.mean(bert_scores_other)
+
+            metric_dict = {"semantic/bert_score": (bert_scores_ref - bert_scores_other, corpus_level_score_ref - corpus_level_score_other)} #Potential for weighting issue
+            return metric_dict
+
 
 if __name__ == "__main__":
     prompt_texts = [""]
@@ -784,6 +824,9 @@ if __name__ == "__main__":
     # print(metric.compute(prompt_texts, gen_texts, reference_texts))
 
     # metric = BERTScoreMetric(language="en")
+    # print(metric.compute(prompt_texts, gen_texts, reference_texts))
+
+    # metric = BERTScoreMetricDual(language="en")
     # print(metric.compute(prompt_texts, gen_texts, reference_texts))
 
     # metric = BLEUMetric()

@@ -583,18 +583,57 @@ class DailyDialog(TextGenPool):
 # NEW DATASETS
 
 
-class MyDataPool(TextGenPool):
+class AnthropicRLHF(TextGenPool):
+    EOU_TOKEN = "<EOU>"
+    SPLIT_STR = "\n\nAssistant:"
+
     @classmethod
     def prepare(cls, split: str):
         split = CommonGen.gen_split_name(split)
-        #dataset = dataset = load_dataset("vicgalle/alpaca-gpt4", split=split)
-        dataset = load_dataset("QingyiSi/Alpaca-CoT", "alpaca_gpt4_data.json")
+        if split == "val" or split == "validation":
+            split = "test"
+        dataset = load_dataset("Anthropic/hh-rlhf", split=split)
         samples = []
         for ix, item in enumerate(dataset):
-            print(item)
+            for key in item:
+                item[key] = item[key].rsplit(AnthropicRLHF.SPLIT_STR, 1)
+                item[key][1] = AnthropicRLHF.SPLIT_STR + item[key][1]
+            new_item = {"prompt": item["chosen"][0], "chosen": item["chosen"][1], "rejected": item["rejected"][1]}
+                #val = val.replace("\n\nHuman:", MyDataPool)
             sample = Sample(id=f"{split}_{ix}",
-                            prompt_or_input_text=item["instruction"],
-                            references=[item["output"]]
+                            prompt_or_input_text=new_item["prompt"],
+                            references=[new_item["chosen"]],
+                            meta_data={"undesirable": new_item["rejected"]}
+                            )
+            samples.append(sample)
+        pool_instance = cls(samples)
+        return pool_instance
+
+
+class HHH_Alignment(TextGenPool):
+    OLD_PATH = os.getcwd()
+    os.chdir("/Users/jerrywhite/PycharmProjects/RL4LMs")
+
+    @classmethod
+    def prepare(cls, split: str):
+        tasks = []
+        dataset = []
+        for task_name in ["harmless", "helpful", "honest", "other"]:
+            with open('hhh_tasks/' + task_name + '.json', 'r') as f:
+                task = json.load(f)
+            for ix, example in enumerate(task["examples"]):
+                prompt = example["input"]
+                reference = [key for key in example["target_scores"] if example["target_scores"][key] == 1]
+                undesirable = [key for key in example["target_scores"] if example["target_scores"][key] == 0]
+                new_example = {"prompt": prompt, "reference": reference, "undesirable": undesirable, "task": task_name}
+                dataset.append(new_example)
+        os.chdir(HHH_Alignment.OLD_PATH)
+        samples = []
+        for ix, item in enumerate(dataset):
+            sample = Sample(id=f"{split}_{ix}",
+                            prompt_or_input_text=item["prompt"],
+                            references=item["reference"],
+                            meta_data={"task": item["task"], "undesirable": item["undesirable"]}
                             )
             samples.append(sample)
         pool_instance = cls(samples)
@@ -605,5 +644,5 @@ if __name__ == "__main__":
     from transformers import AutoTokenizer
     import numpy as np
 
-    dp = MyDataPool.prepare("train")
-    print(dp[0])
+    dp = AnthropicRLHF.prepare("train")
+    print(dp[9])
