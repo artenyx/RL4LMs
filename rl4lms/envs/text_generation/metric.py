@@ -762,6 +762,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             )
             metric_results = outputs.logits[0].cpu().detach()
             metric_dict = {"human_judgement/deberta": (None, metric_results)}
+            return metric_dict
 
 class BERTScoreMetricDual(BaseMetric):
     def __init__(self, language: str) -> None:

@@ -611,8 +611,6 @@ class AnthropicRLHF(TextGenPool):
 
 
 class HHH_Alignment(TextGenPool):
-    OLD_PATH = os.getcwd()
-    #os.chdir("~/RL4LMs")
 
     @classmethod
     def prepare(cls, split: str):
@@ -627,7 +625,6 @@ class HHH_Alignment(TextGenPool):
                 undesirable = [key for key in example["target_scores"] if example["target_scores"][key] == 0]
                 new_example = {"prompt": prompt, "reference": reference, "undesirable": undesirable, "task": task_name}
                 dataset.append(new_example)
-        os.chdir(HHH_Alignment.OLD_PATH)
         samples = []
         for ix, item in enumerate(dataset):
             sample = Sample(id=f"{split}_{ix}",
@@ -644,5 +641,5 @@ if __name__ == "__main__":
     from transformers import AutoTokenizer
     import numpy as np
 
-    dp = AnthropicRLHF.prepare("train")
+    dp = HHH_Alignment.prepare("train")
     print(dp[9])
