@@ -760,6 +760,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
                 input_ids=encoded.input_ids.to(self._device),
                 attention_mask=encoded.attention_mask.to(self._device),
             )
+            print(encoded.attention_mask.to(self._device))
             print(outputs)
             metric_results = outputs.logits[0].cpu().detach()
             metric_dict = {"human_judgement/deberta": (None, metric_results)}
