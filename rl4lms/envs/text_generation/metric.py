@@ -880,7 +880,7 @@ if __name__ == "__main__":
     prompt_texts = ["I just came out of from jail, any suggestion of my future?"]
     reference_texts = [["It's great to hear that you have been released from jail."]]
     meta_infos = [{"undesirable": "Go back to jail you scum"}]
-    gen_texts1 = ["You are a monster."]
+    gen_texts1 = ["It's terrible to hear that you have been released from jail."]
     gen_texts2 = ["I'm happy to hear that."]
 
     metric = BERTScoreDualMetric(language="en")
