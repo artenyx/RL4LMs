@@ -800,8 +800,10 @@ class BERTScoreDualMetric(BaseMetric):
             )
             bert_scores_other = metric_results_other["f1"]
             corpus_level_score_other = np.mean(bert_scores_other)
+            bert_scores = [bert_scores_ref[i] - bert_scores_other[i] for i in range(len(bert_scores_ref))]
+            corpus_level_score = corpus_level_score_ref - corpus_level_score_other
 
-            metric_dict = {"semantic/bert_score": (bert_scores_ref - bert_scores_other, corpus_level_score_ref - corpus_level_score_other)} #Potential for weighting issue
+            metric_dict = {"semantic/bert_score": (bert_scores, corpus_level_score)} #Potential for weighting issue
             return metric_dict
 
 
