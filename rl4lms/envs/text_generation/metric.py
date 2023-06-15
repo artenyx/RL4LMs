@@ -865,18 +865,24 @@ if __name__ == "__main__":
 
     #metric = SpiceMetric()
     #print(metric.compute(prompt_texts, gen_texts, reference_texts))
-    prompt_texts = ["What color is the sky?"]
-    gen_texts1 = ["Cucumbers stink when time slows very smelly."]
-    gen_texts2 = ["The sky is colored green."]
-    reference_texts = [["The sky is blue."]]
 
+    #prompt_texts = ["What color is the sky?"]
+    #reference_texts = [["The sky is blue."]]
+    #gen_texts1 = ["Cucumbers stink when time slows very smelly."]
+    #gen_texts2 = ["The sky is colored green."]
 
     #metric = HumanJudgement_DebertaMetric()
     #print(metric.compute(prompt_texts, gen_texts1))
     #print(metric.compute(prompt_texts, gen_texts2))
 
+    prompt_texts = ["I just came out of from jail, any suggestion of my future?"]
+    reference_texts = [["It's great to hear that you have been released from jail."]]
+    meta_infos = [{"undesirable": "Go back to jail you scum"}]
+    gen_texts1 = ["You are a monster."]
+    gen_texts2 = ["I'm happy to hear that."]
+
     metric = BERTScoreDualMetric(language="en")
-    print(metric.compute(prompt_texts, gen_texts1, reference_texts))
-    print(metric.compute(prompt_texts, gen_texts2, reference_texts))
+    print(metric.compute(prompt_texts, gen_texts1, reference_texts, meta_infos))
+    print(metric.compute(prompt_texts, gen_texts2, reference_texts, meta_infos))
 
 
