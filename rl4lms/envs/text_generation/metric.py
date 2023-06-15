@@ -735,7 +735,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             self,
             prompt_texts: List[str],
             generated_texts: List[str],
-            reference_texts: List[List[str]],
+            reference_texts: List[List[str]] = None,
             meta_infos: List[Dict[str, Any]] = None,
             model: PreTrainedModel = None,
             split_name: str = None,
@@ -855,6 +855,7 @@ if __name__ == "__main__":
         "The dog is the boy's cat.",
         "A boy is picking apples from trees and put them into bags.",
     ]
+
     reference_texts = [
         ["The dog is the boy's cat.", "The dog eats the cat of the boy."],
         ["A boy is picking apples from trees."],
@@ -864,7 +865,11 @@ if __name__ == "__main__":
 
     #metric = SpiceMetric()
     #print(metric.compute(prompt_texts, gen_texts, reference_texts))
+    prompt_texts = ["What color is the sky?"]
+    gen_texts1 = ["Cucumbers stink when time slows very smelly."]
+    gen_texts2 = ["The sky is blue."]
 
     metric = HumanJudgement_DebertaMetric()
-    print(metric.compute(prompt_texts, gen_texts, reference_texts))
+    print(metric.compute(prompt_texts, gen_texts1))
+    print(metric.compute(prompt_texts, gen_texts2))
 
