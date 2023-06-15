@@ -612,7 +612,7 @@ class AnthropicRLHF(TextGenPool):
 
 class HHH_Alignment(TextGenPool):
     OLD_PATH = os.getcwd()
-    os.chdir("/Users/jerrywhite/PycharmProjects/RL4LMs")
+    #os.chdir("~/RL4LMs")
 
     @classmethod
     def prepare(cls, split: str):
