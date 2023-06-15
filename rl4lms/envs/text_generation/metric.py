@@ -764,7 +764,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             metric_dict = {"human_judgement/deberta": (None, metric_results)}
             return metric_dict
 
-class BERTScoreMetricDual(BaseMetric):
+class BERTScoreDualMetric(BaseMetric):
     def __init__(self, language: str) -> None:
         super().__init__()
         self._metric = load_metric("bertscore")
@@ -867,9 +867,16 @@ if __name__ == "__main__":
     #print(metric.compute(prompt_texts, gen_texts, reference_texts))
     prompt_texts = ["What color is the sky?"]
     gen_texts1 = ["Cucumbers stink when time slows very smelly."]
-    gen_texts2 = ["The sky is blue."]
+    gen_texts2 = ["The sky is colored green."]
+    reference_texts = [["The sky is blue."]]
 
-    metric = HumanJudgement_DebertaMetric()
-    print(metric.compute(prompt_texts, gen_texts1))
-    print(metric.compute(prompt_texts, gen_texts2))
+
+    #metric = HumanJudgement_DebertaMetric()
+    #print(metric.compute(prompt_texts, gen_texts1))
+    #print(metric.compute(prompt_texts, gen_texts2))
+
+    metric = BERTScoreDualMetric(language="en")
+    print(metric.compute(prompt_texts, gen_texts1, reference_texts))
+    print(metric.compute(prompt_texts, gen_texts2, reference_texts))
+
 
