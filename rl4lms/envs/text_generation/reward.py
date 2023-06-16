@@ -15,6 +15,8 @@ from rl4lms.envs.text_generation.metric import (
     TERMetric,
     chrFmetric,
     IntentAccuracyDailyDialog,
+    HumanJudgement_DebertaMetric,
+    BERTScoreDualMetric,
 )
 import numpy as np
 from typing import List, Dict, Any
@@ -606,18 +608,36 @@ class IntentAccuracy(BatchedRewardFunction):
         rewards[done_ixs] += self._intent_coeff * np.array(scores)
         return rewards.tolist()
 
-class HumanJudgement(RewardFunction):
-    def __init__(self, *args) -> None:
+class HumanJudgementRewardFunction(RewardFunction):
+    def __init__(self, **args) -> None:
         super().__init__()
+        self._metric = None
+        self._args = args
 
-    def __call__(self, prev_observation: Observation,
-                 action: int,
-                 current_observation: Observation,
-                 done: bool,
-                 meta_info: Dict[str, Any] = None) -> float:
+    def __call__(
+        self,
+        current_observation: Observation,
+        action: int,
+        next_observation: Observation,
+        done: bool,
+        meta_info: Dict[str, Any] = None,
+    ) -> float:
+        if self._metric is None:
+            self._metric = HumanJudgement_DebertaMetric()
         if done:
-            reward =None
+            generated_texts = [next_observation.context_text]
+            meta_infos = [meta_info]
+            scores = self._metric.compute(prompt_texts=None, generated_texts=generated_texts)
+            reward = scores["table_to_text/parent_overall_f_score"][0][0]
             return reward
+
+        if done:
+            references = [next_observation.target_or_reference_texts]
+            predicted = [next_observation.context_text]
+            metric_results = self._metric.compute(
+                prompt_texts=predicted, **self._args
+            )
+            return metric_results["score"] / 100
         return 0
 
 

@@ -741,14 +741,17 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             split_name: str = None,
     ) -> Tuple[List[float], float]:
         def get_input_for_classifier(prompt, generated_text):
-            input_text = prompt + generated_text
+            input_text = prompt + generated_text if prompt is not None else generated_text
             return input_text
 
         # we have to extract the history utterances
-        input_texts = [
-            get_input_for_classifier(prompt, gen)
-            for prompt, gen in zip(prompt_texts, generated_texts)
-        ]
+        if prompt_texts is not None:
+            input_texts = [
+                get_input_for_classifier(prompt, gen)
+                for prompt, gen in zip(prompt_texts, generated_texts)
+            ]
+        else:
+            input_texts = generated_texts
 
         # tokenize
         encoded = self._tokenizer(
@@ -760,8 +763,9 @@ class HumanJudgement_DebertaMetric(BaseMetric):
                 input_ids=encoded.input_ids.to(self._device),
                 attention_mask=encoded.attention_mask.to(self._device),
             )
-            metric_results = outputs.logits[0].cpu().detach()
-            metric_dict = {"human_judgement/deberta": (None, metric_results)}
+            individual_scores = outputs.logits[0].cpu().detach()
+            corpus_score = np.mean(individual_scores)
+            metric_dict = {"human_judgement/deberta": (individual_scores, corpus_score)}
             return metric_dict
 
 class BERTScoreDualMetric(BaseMetric):
@@ -868,23 +872,23 @@ if __name__ == "__main__":
     #metric = SpiceMetric()
     #print(metric.compute(prompt_texts, gen_texts, reference_texts))
 
-    #prompt_texts = ["What color is the sky?"]
-    #reference_texts = [["The sky is blue."]]
-    #gen_texts1 = ["Cucumbers stink when time slows very smelly."]
-    #gen_texts2 = ["The sky is colored green."]
+    prompt_texts = ["What color is the sky?"]
+    reference_texts = [["The sky is blue."]]
+    gen_texts1 = ["Cucumbers stink when time slows very smelly."]
+    gen_texts2 = ["The sky is colored green."]
 
-    #metric = HumanJudgement_DebertaMetric()
-    #print(metric.compute(prompt_texts, gen_texts1))
-    #print(metric.compute(prompt_texts, gen_texts2))
+    metric = HumanJudgement_DebertaMetric()
+    print(metric.compute(prompt_texts, gen_texts1))
+    print(metric.compute(prompt_texts, gen_texts2))
 
-    prompt_texts = ["I just came out of from jail, any suggestion of my future?"]
-    reference_texts = [["It's great to hear that you have been released from jail."]]
-    meta_infos = [{"undesirable": "Go back to jail you scum"}]
-    gen_texts1 = ["It's terrible to hear that you have been released from jail."]
-    gen_texts2 = ["I'm happy to hear that."]
+    #prompt_texts = ["I just came out of from jail, any suggestion of my future?"]
+    #reference_texts = [["It's great to hear that you have been released from jail."]]
+    #meta_infos = [{"undesirable": "Go back to jail you scum"}]
+    #gen_texts1 = ["It's terrible to hear that you have been released from jail."]
+    #gen_texts2 = ["I'm happy to hear that."]
 
-    metric = BERTScoreDualMetric(language="en")
-    print(metric.compute(prompt_texts, gen_texts1, reference_texts, meta_infos))
-    print(metric.compute(prompt_texts, gen_texts2, reference_texts, meta_infos))
+    #metric = BERTScoreDualMetric(language="en")
+    #print(metric.compute(prompt_texts, gen_texts1, reference_texts, meta_infos)) # 0.09
+    #print(metric.compute(prompt_texts, gen_texts2, reference_texts, meta_infos)) # 0.06
 
 
