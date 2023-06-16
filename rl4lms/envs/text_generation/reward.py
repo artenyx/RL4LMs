@@ -640,32 +640,32 @@ if __name__ == "__main__":
         None, None, None, None, None, predictions, references, None, None, None, None
     )
 
-    reward_fn = MeteorRewardFunction()
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = MeteorRewardFunction()
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = chrF()
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = chrF()
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = RougeCombined()
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = RougeCombined()
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = RougeRewardFunction(rouge_type="rouge1")
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = RougeRewardFunction(rouge_type="rouge1")
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = RougeRewardFunction(rouge_type="rouge2")
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = RougeRewardFunction(rouge_type="rouge2")
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = RougeRewardFunction(rouge_type="rougeL")
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = RougeRewardFunction(rouge_type="rougeL")
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = BERTScoreRewardFunction(language="en")
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = BERTScoreRewardFunction(language="en")
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = BLEURewardFunction()
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = BLEURewardFunction()
+    #print(reward_fn(None, None, observation, True))
 
-    reward_fn = BLEURTRewardFunction()
-    print(reward_fn(None, None, observation, True))
+    #reward_fn = BLEURTRewardFunction()
+    #print(reward_fn(None, None, observation, True))
 
     reward_fn = HumanJudgementRewardFunction()
     print(reward_fn(None, None, observation, True))
