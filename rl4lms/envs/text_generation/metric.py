@@ -741,7 +741,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             split_name: str = None,
     ) -> Tuple[List[float], float]:
         def get_input_for_classifier(prompt, generated_text):
-            input_text = prompt + generated_text if prompt is not None else generated_text
+            input_text = prompt + " " +  generated_text if prompt is not None else generated_text
             return input_text
 
         # we have to extract the history utterances
@@ -764,6 +764,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
                 input_ids=encoded.input_ids.to(self._device),
                 attention_mask=encoded.attention_mask.to(self._device),
             )
+            print(outputs)
             individual_scores = outputs.logits[0].cpu().detach().numpy()
             print(individual_scores)
             corpus_score = np.mean(individual_scores.tolist())
