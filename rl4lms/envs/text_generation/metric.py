@@ -752,7 +752,6 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             ]
         else:
             input_texts = generated_texts
-        print(input_texts)
 
         # tokenize
         encoded = self._tokenizer(
@@ -765,9 +764,9 @@ class HumanJudgement_DebertaMetric(BaseMetric):
                 attention_mask=encoded.attention_mask.to(self._device),
             )
             individual_scores = outputs.logits.cpu().detach().numpy()
-            print(individual_scores)
             corpus_score = np.mean(individual_scores)
             metric_dict = {"human_judgement/deberta": (individual_scores, corpus_score)}
+            print(metric_dict)
             return metric_dict
 
 class BERTScoreDualMetric(BaseMetric):
