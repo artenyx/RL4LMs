@@ -873,10 +873,9 @@ if __name__ == "__main__":
     #metric = SpiceMetric()
     #print(metric.compute(prompt_texts, gen_texts, reference_texts))
 
-    prompt_texts = ["What color is the sky?"]
-    reference_texts = [["The sky is blue."]]
-    gen_texts1 = ["Cucumbers stink when time slows very smelly."]
-    gen_texts2 = ["The sky is colored green."]
+    prompt_texts = ["What color is the sky?", "How are you today?"]
+    gen_texts1 = ["Cucumbers stink when time slows very smelly.", "You fell on your sword."]
+    gen_texts2 = ["The sky is colored green.", "I feel great thanks for asking."]
 
     metric = HumanJudgement_DebertaMetric()
     print(metric.compute(prompt_texts, gen_texts1))
