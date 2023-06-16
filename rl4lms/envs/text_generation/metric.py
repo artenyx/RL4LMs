@@ -764,10 +764,9 @@ class HumanJudgement_DebertaMetric(BaseMetric):
                 input_ids=encoded.input_ids.to(self._device),
                 attention_mask=encoded.attention_mask.to(self._device),
             )
-            print(outputs)
-            individual_scores = outputs.logits[0].cpu().detach().numpy()
+            individual_scores = outputs.logits.cpu().detach().numpy()
             print(individual_scores)
-            corpus_score = np.mean(individual_scores.tolist())
+            corpus_score = np.mean(individual_scores)
             metric_dict = {"human_judgement/deberta": (individual_scores, corpus_score)}
             return metric_dict
 
