@@ -628,16 +628,8 @@ class HumanJudgementRewardFunction(RewardFunction):
             generated_texts = [next_observation.context_text]
             meta_infos = [meta_info]
             scores = self._metric.compute(prompt_texts=None, generated_texts=generated_texts)
-            reward = scores["table_to_text/parent_overall_f_score"][0][0]
+            reward = scores["human_judgement/deberta"][1]
             return reward
-
-        if done:
-            references = [next_observation.target_or_reference_texts]
-            predicted = [next_observation.context_text]
-            metric_results = self._metric.compute(
-                prompt_texts=predicted, **self._args
-            )
-            return metric_results["score"] / 100
         return 0
 
 
@@ -673,4 +665,7 @@ if __name__ == "__main__":
     print(reward_fn(None, None, observation, True))
 
     reward_fn = BLEURTRewardFunction()
+    print(reward_fn(None, None, observation, True))
+
+    reward_fn = HumanJudgementRewardFunction()
     print(reward_fn(None, None, observation, True))
