@@ -752,6 +752,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             ]
         else:
             input_texts = generated_texts
+        print(input_texts)
 
         # tokenize
         encoded = self._tokenizer(
