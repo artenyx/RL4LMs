@@ -21,7 +21,7 @@ else
   off_policy=NONE
 fi
 
-if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]]; then
+if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]] || [[ "$task_name" == human_judgement ]]; then
   if [[ $base_model_sm == true ]]; then
     base_model_name=distilgpt2
   else
