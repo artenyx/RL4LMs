@@ -11,7 +11,7 @@ datapool:
   id: "anthropic_rlhf"
 
 env:
-  n_envs: 50
+  n_envs: 10
   args:
     max_prompt_length: 128
     max_episode_length: 20
