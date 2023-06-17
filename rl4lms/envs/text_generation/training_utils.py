@@ -50,6 +50,7 @@ def build_reward_fn(reward_config: Dict[str, Any]):
 
 
 def build_metrics(metric_configs: List[Dict[str, Any]]):
+    print(metric_configs)
     metrics = [MetricRegistry.get(metric_config["id"], metric_config.get("args", {}))
                for metric_config in metric_configs]
     return metrics

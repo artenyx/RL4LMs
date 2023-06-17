@@ -30,7 +30,6 @@ fi
 if [ -n "$7" ] && [ "$7" != NONE ]; then
   args+=("--off_policy $off_policy")
 fi
-echo $off_policy
 
 args+=("--base_path_to_store_results /share/data/kartik-collab/geraldkwhite/" \
 "--log_to_wandb" \
