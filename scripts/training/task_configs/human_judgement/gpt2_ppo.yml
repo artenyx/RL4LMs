@@ -5,16 +5,10 @@ tokenizer:
   pad_token_as_eos_token: True
 
 reward_fn:
-  id: "intent_accuracy"
-  args:
-    intent_coeff: 0.75
-    auto_coeff: 0.25
-
+  id: "deberta"
 
 datapool:
-  id: "daily_dialog"
-  args:
-    context_size: 5
+  id: "anthropic_rlhf"
 
 env:
   n_envs: 50
@@ -53,25 +47,8 @@ train_evaluation:
   eval_every: 5
   save_every: 10
   metrics:
-    - id: intent_accuracy
-    - id: causal_perplexity
-      args:
-        tokenizer_id: gpt2
-        stride: 128
-        model_type: causal
-    - id: diversity
-      args: {}
-    - id: meteor
-      args: {}
-    - id: rouge
-    - id: bleu
-      args: {}
-    - id: bert_score
-      args:
-        language: en
-    - id: sacre_bleu
-      args:
-        tokenize: "intl"
+    -id: deberta
+    #- id: intent_accuracy
   generation_kwargs:
     do_sample: True
     top_k: 20
