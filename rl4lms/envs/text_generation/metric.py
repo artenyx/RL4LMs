@@ -722,10 +722,10 @@ class HumanJudgement_DebertaMetric(BaseMetric):
     def __init__(self) -> None:
         super().__init__()
         self._tokenizer = AutoTokenizer.from_pretrained(
-            "OpenAssistant/reward-model-deberta-v3-large-v2"
+            "OpenAssistant/reward-model-deberta-v3-base"
         )
         self._model = AutoModelForSequenceClassification.from_pretrained(
-            "OpenAssistant/reward-model-deberta-v3-large-v2"
+            "OpenAssistant/reward-model-deberta-v3-base"
         )
         self._device = "cuda" if torch.cuda.is_available() else "cpu"
         self._device = f"cuda:{torch.cuda.device_count() - 1}"
