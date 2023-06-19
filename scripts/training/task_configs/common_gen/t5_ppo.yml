@@ -45,7 +45,7 @@ datapool:
 
 
 env:
-  n_envs: 50
+  n_envs: 70
   args:
     max_prompt_length: 20
     max_episode_length: 20
