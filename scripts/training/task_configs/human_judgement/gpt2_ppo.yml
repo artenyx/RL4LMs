@@ -22,7 +22,7 @@ alg:
   id: ppo
   args:
     n_steps: 128
-    batch_size: 64
+    batch_size: 32
     verbose: 1
     learning_rate: 0.000001
     n_epochs: 5
@@ -48,10 +48,10 @@ train_evaluation:
   eval_every: 5
   save_every: 10
   metrics:
-    - id: bert_dual
-      args:
-        language: en
-    # - id: deberta
+    #- id: bert_dual
+    #  args:
+    #    language: en
+    - id: deberta
     #- id: intent_accuracy
   generation_kwargs:
     do_sample: True
