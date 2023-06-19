@@ -590,8 +590,10 @@ class AnthropicRLHF(TextGenPool):
     @classmethod
     def prepare(cls, split: str):
         split = CommonGen.gen_split_name(split)
-        if split == "val" or split == "test":
+        if split == "test":
             return HHH_Alignment.prepare(split)
+        if split == "val":
+            split = "test"
         dataset = load_dataset("Anthropic/hh-rlhf", split=split)
         samples = []
         for ix, item in enumerate(dataset):
@@ -613,7 +615,7 @@ class AnthropicRLHF(TextGenPool):
 class HHH_Alignment(TextGenPool):
 
     @classmethod
-    def prepare(cls, split: str):
+    def prepare(cls, split: str = None):
         tasks = []
         dataset = []
         for task_name in ["harmless", "helpful", "honest", "other"]:
