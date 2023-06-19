@@ -48,10 +48,10 @@ train_evaluation:
   eval_every: 5
   save_every: 10
   metrics:
-    #- id: bert_dual
-    #  args:
-    #    language: en
-    - id: deberta
+    - id: bert_dual
+      args:
+        language: en
+    #- id: deberta
     #- id: intent_accuracy
   generation_kwargs:
     do_sample: True
