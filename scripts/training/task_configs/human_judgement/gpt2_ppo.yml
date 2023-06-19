@@ -48,7 +48,7 @@ train_evaluation:
   eval_every: 5
   save_every: 10
   metrics:
-    - id: meteor
+    - id: bert_dual
     # - id: deberta
     #- id: intent_accuracy
   generation_kwargs:
