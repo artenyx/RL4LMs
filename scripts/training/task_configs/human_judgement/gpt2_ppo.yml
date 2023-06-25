@@ -51,7 +51,7 @@ train_evaluation:
     - id: bert_dual
       args:
         language: en
-    - id: deberta
+    #- id: deberta
     #- id: intent_accuracy
   generation_kwargs:
     do_sample: True
