@@ -44,7 +44,7 @@ def main(
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
 
-    dt = datetime.now().strftime("%m%d%y%H%M%S")
+    dt = datetime.now().strftime("%m%d%y%H%M%S%f")
     config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
     config["wandb_group_id"] = group
     config["alg"]["args"]["kl_type"] = kl_type

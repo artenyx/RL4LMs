@@ -741,7 +741,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             split_name: str = None,
     ) -> Tuple[List[float], float]:
         def get_input_for_classifier(prompt, generated_text):
-            input_text = prompt + " " +  generated_text if prompt is not None else generated_text
+            input_text = prompt + " " + generated_text if prompt is not None else generated_text
             return input_text
 
         # we have to extract the history utterances
