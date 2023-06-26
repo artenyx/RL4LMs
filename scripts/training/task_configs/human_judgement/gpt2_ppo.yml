@@ -51,6 +51,20 @@ train_evaluation:
     - id: bert_dual
       args:
         language: en
+    - id: diversity
+      args: { }
+    - id: meteor
+      args: { }
+    - id: rouge
+    - id: bleu
+      args: { }
+    - id: bert_score
+      args:
+        language: en
+    - id: sacre_bleu
+      args:
+        tokenize: "intl"
+
     #- id: deberta
     #- id: intent_accuracy
   generation_kwargs:
