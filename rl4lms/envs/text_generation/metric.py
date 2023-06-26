@@ -718,6 +718,7 @@ class IntentAccuracyDailyDialog(BaseMetric):
         metric_dict = {"intent/accuracy": (matching_scores.tolist(), intent_accuracy)}
         return metric_dict
 
+
 class HumanJudgement_DebertaMetric(BaseMetric):
     def __init__(self) -> None:
         super().__init__()
@@ -768,6 +769,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
             metric_dict = {"human_judgement/deberta": (individual_scores, corpus_score)}
             return metric_dict
 
+
 class BERTScoreDualMetric(BaseMetric):
     def __init__(self, language: str) -> None:
         super().__init__()
@@ -809,6 +811,32 @@ class BERTScoreDualMetric(BaseMetric):
 
             metric_dict = {"semantic/bert_score_dual": (bert_scores, corpus_level_score)} #Potential for weighting issue
             return metric_dict
+
+
+class CommonGenProportionMetric(BaseMetric):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def compute(
+            self,
+            prompt_texts: List[str],
+            generated_texts: List[str],
+            reference_texts: List[List[str]] = None,
+            meta_infos: List[Dict[str, Any]] = None,
+            model: PreTrainedModel = None,
+            split_name: str = None,
+    ) -> Tuple[List[float], float]:
+
+        proportions = []
+        for ix, gen in enumerate(generated_texts):
+            context_words = meta_infos[ix]["context"]
+            included = [True for context in context_words if context in gen]
+            proportions.append(len(included) / len(context_words))
+
+        individual_scores = np.array(proportions)
+        corpus_score = np.mean(individual_scores)
+        metric_dict = {"common_gen/proportions": (individual_scores, corpus_score)}
+        return metric_dict
 
 
 if __name__ == "__main__":

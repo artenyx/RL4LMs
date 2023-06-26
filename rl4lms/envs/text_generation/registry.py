@@ -48,6 +48,7 @@ from rl4lms.envs.text_generation.metric import (
     IntentAccuracyDailyDialog,
     HumanJudgement_DebertaMetric,
     BERTScoreDualMetric,
+    CommonGenProportionMetric,
 )
 from rl4lms.envs.text_generation.policy.base_policy import LMActorCriticPolicy
 from rl4lms.envs.text_generation.policy.causal_policy import (
@@ -178,6 +179,7 @@ class MetricRegistry:
         "intent_accuracy": IntentAccuracyDailyDialog,
         "deberta": HumanJudgement_DebertaMetric,
         "bert_dual": BERTScoreDualMetric,
+        "commongen_proportion": CommonGenProportionMetric,
     }
 
     @classmethod
