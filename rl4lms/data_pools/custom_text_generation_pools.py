@@ -599,7 +599,7 @@ class AnthropicRLHF(TextGenPool):
         for ix, item in enumerate(dataset):
             for key in item:
                 item[key] = item[key].rsplit(AnthropicRLHF.SPLIT_STR, 1)
-                item[key][1] = AnthropicRLHF.SPLIT_STR + item[key][1]
+                item[key][0] += AnthropicRLHF.SPLIT_STR
             new_item = {"prompt": item["chosen"][0], "chosen": item["chosen"][1], "rejected": item["rejected"][1]}
                 #val = val.replace("\n\nHuman:", MyDataPool)
             sample = Sample(id=f"{split}_{ix}",
@@ -643,5 +643,5 @@ if __name__ == "__main__":
     from transformers import AutoTokenizer
     import numpy as np
 
-    dp = HHH_Alignment.prepare("train")
+    dp = AnthropicRLHF.prepare("train")
     print(dp[9])
