@@ -15,7 +15,7 @@ env:
   n_envs: 10
   args:
     max_prompt_length: 128
-    max_episode_length: 20
+    max_episode_length: 40
     terminate_on_eos: True
 
 alg:
@@ -28,7 +28,7 @@ alg:
     n_epochs: 5
 
   kl_div:
-    coeff: 0.4
+    coeff: 0.2
     target_kl: 0.5
 
   policy:
