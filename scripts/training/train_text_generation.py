@@ -19,6 +19,7 @@ def shorten_task_name(task_name: str
                    "summarization": "summ",
                    "narrative_qa": "nqa",
                    "iwslt2017": "iwslt",
+                   "human_judgement": "hj",
                    }
     task_name = task_shorts[task_name] if task_name in list(task_shorts) else task_name
     task_name += "_"
