@@ -28,7 +28,7 @@ alg:
     n_epochs: 5
 
   kl_div:
-    coeff: 0.3
+    coeff: 0.4
     target_kl: 0.5
 
   policy:
