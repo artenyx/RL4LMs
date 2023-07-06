@@ -619,7 +619,9 @@ class HHH_Alignment(TextGenPool):
         tasks = []
         dataset = []
         for task_name in ["harmless", "helpful", "honest", "other"]:
-            with open('hhh_tasks/' + task_name + '.json', 'r') as f:
+            #path = '/Users/jerrywhite/PycharmProjects/RL4LMs/hhh_tasks/' + task_name + '.json'
+            path = 'hhh_tasks/' + task_name + '.json'
+            with open(path) as f:
                 task = json.load(f)
             for ix, example in enumerate(task["examples"]):
                 prompt = example["input"]
@@ -643,5 +645,8 @@ if __name__ == "__main__":
     from transformers import AutoTokenizer
     import numpy as np
 
-    dp = AnthropicRLHF.prepare("train")
-    print(dp[9])
+    ds = AnthropicRLHF.prepare("train")
+    for i in range (5):
+        dp = ds[i][0]
+        print(f"Prompt: {dp.prompt_or_input_text} \n\n Chosen Response: {dp.references[0]} \n\n Undesirable Response: {dp.meta_data['undesirable']}")
+        print("------------------------------------------------------------------------------------")
