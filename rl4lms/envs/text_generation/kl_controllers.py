@@ -14,7 +14,8 @@ class KLController:
         if self._target_kl is not None:
             diff_to_target = (kl_div - self._target_kl) / self._target_kl
             e_t = torch.clip(diff_to_target, -0.2, 0.2).item()
-            self._kl_coeff = self._kl_coeff * (1 + 0.1 * e_t)
+            # self._kl_coeff = self._kl_coeff * (1 + 0.1 * e_t)
+            self._kl_coeff = 1.0
 
     @property
     def kl_coeff(self):
