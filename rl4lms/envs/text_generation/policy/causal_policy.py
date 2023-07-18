@@ -71,10 +71,11 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         self._policy_model = AutoModelForCausalLM.from_pretrained(model_name)
         self._policy_model.__class__ = override_generation_routines(
             type(self._policy_model)
-        )
+        ) ##
 
         if ref_model_name is None:
-            self._ref_model = deepcopy(self._policy_model).eval()
+            ref_model_name = model_name
+            self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name).eval()
         else:
             self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name).eval()
 
