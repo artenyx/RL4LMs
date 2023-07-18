@@ -33,8 +33,8 @@ alg:
     n_epochs: 5
     
   kl_div:
-    coeff: 0.8
-    target_kl: 0.5
+    coeff: 0.2
+    target_kl: 0.0
  
   policy:
     id: causal_lm_actor_critic_policy
