@@ -74,11 +74,14 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
         self._value_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
         if ref_model_name is None:
-            self._ref_model = deepcopy(self._policy_model).eval()
+            ref_model_name = model_name
+            self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name).eval()
         else:
             self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name).eval()
 
-        self._ref_model = deepcopy(self._policy_model).eval()
+        self._policy_model.__class__ = override_generation_routines(
+            type(self._ref_model)
+        )
 
         self._value_head = nn.Linear(
             self._value_model.config.hidden_size, 1, bias=False
