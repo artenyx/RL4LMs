@@ -39,6 +39,7 @@ def main(
     group: str,
     kl_type: str,
     off_policy: bool,
+    beta_kl: float,
 ):
 
     # load the config file
@@ -50,6 +51,8 @@ def main(
     config["wandb_group_id"] = group
     config["alg"]["args"]["kl_type"] = kl_type
     config["alg"]["args"]["off_policy"] = off_policy
+    if beta_kl is not None:
+        config["alg"]["kl_div"]["coeff"] = beta_kl
 
     base_model_str, ref_model_str = "", ""
     if base_model_name is not None:
@@ -160,6 +163,13 @@ if __name__ == "__main__":
         default="false",
         choices=["true", "false"]
     )
+    parser.add_argument(
+        "--beta_kl",
+        type=float,
+        help="value for beta kl",
+        default=None,
+    )
+
     args = parser.parse_args()
     args.off_policy = args.off_policy == "true"
 
@@ -176,4 +186,5 @@ if __name__ == "__main__":
         args.group,
         args.kl_type,
         args.off_policy,
+        args.beta_kl,
     )

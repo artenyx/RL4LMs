@@ -21,6 +21,12 @@ else
   off_policy=NONE
 fi
 
+if [ -n "$6" ]; then
+  beta_exp="$6"
+else
+  beta_exp=NONE
+fi
+
 if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]] || [[ "$task_name" == human_judgement ]]; then
   if [[ $base_model_sm == true ]]; then
     base_model_name=distilgpt2
@@ -43,18 +49,27 @@ elif [[ "$base_model_name" == *t5* ]]; then
   ref_models=("t5-base" "t5-large" "t5-3b" "t5-11b")
 fi
 
+#setting beta experiments
+
+
 #setting correct gpu partition
 if [[ "$group" == *ENVS* ]] || [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
 else
   partition=speech-gpu
 fi
+
 #partition=contrib-gpu-long
-
-for ref_model_name in ${ref_models[@]}
-do
-  sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"
-  # bash slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy" # for testing
-done
-
+if [[ "$beta_exp" == false ]] || [[ "$beta_exp" == NONE ]]; then
+  for ref_model_name in ${ref_models[@]}
+  do
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"
+    # bash slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy" # for testing
+  done
+else
+  for beta in 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+  do
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$base_model_name" NONE "$group" "$kl_type" "$off_policy" "$beta"
+  done
+fi
 # speech-gpu
 # contrib-gpu-long

@@ -7,6 +7,7 @@ experiment_name="$4"
 group="$5"
 kl_type="$6"
 off_policy="$7"
+beta_kl="$8"
 
 args=()
 if [[ "$base_model_name" == *gpt2* ]]; then
@@ -29,6 +30,10 @@ fi
 
 if [ -n "$7" ] && [ "$7" != NONE ]; then
   args+=("--off_policy $off_policy")
+fi
+
+if [ -n "$8" ] && [ "$8" != NONE ]; then
+  args+=("--beta_kl $beta_kl")
 fi
 
 args+=("--base_path_to_store_results /share/data/kartik-collab/geraldkwhite/" \
