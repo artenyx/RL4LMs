@@ -66,9 +66,10 @@ if [[ "$beta_exp" == false ]] || [[ "$beta_exp" == NONE ]]; then
     # bash slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy" # for testing
   done
 else
-  for beta in 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0
+  # for beta in 0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6 1.8 2.0
+  for beta in 0.01 0.05 0.1 0.15 0.2
   do
-    sbatch -p "$partition" -C 48g -c2 slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" "$beta"
+    sbatch -p "$partition" -C 48g -c2 slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-medium" NONE "$group" "$kl_type" "$off_policy" "$beta"
   done
 fi
 # speech-gpu
