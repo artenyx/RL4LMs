@@ -250,6 +250,11 @@ def wrap_onpolicy_alg(
                         full_logits = F.log_softmax(full_logits, dim=1)
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
                         kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits).sum(dim=1)
+                    elif self.kl_type == "full_kl_2":
+                        # compute KL rewards (True KL Div)
+                        full_logits = F.softmax(full_logits, dim=1)
+                        ref_full_logits = F.log_softmax(ref_full_logits, dim=1)
+                        kl_div = nn.KLDivLoss(reduction="none")(ref_full_logits, full_logits).sum(dim=1)
                     elif self.kl_type == "cross_entropy":
                         # compute KL rewards (KD - Cross Entropy)
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
