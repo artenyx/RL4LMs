@@ -154,7 +154,7 @@ if __name__ == "__main__":
         type=str,
         help="type of KL divergence in reward to use",
         default="standard",
-        choices=["standard", "full_kl", "cross_entropy"],
+        choices=["standard", "full_kl", "cross_entropy", "full_kl_2"],
     )
     parser.add_argument(
         "--off_policy",
