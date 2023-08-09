@@ -59,15 +59,15 @@ else
 fi
 
 #partition=contrib-gpu-long
-if [[ "$exp" == beta ]]; then
+if [[ "$exp" == init_beta ]]; then
   for beta in 0.1 0.15 0.2 0.22 0.25 0.3
   do
     sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2" NONE "$group" "$kl_type" "$off_policy" "$beta"
   done
-elif [[ "$exp" == targ_beta ]]; then
-  for targ_beta in 0.6 0.8 1.0 1.2
+elif [[ "$exp" == targ_kl ]]; then
+  for targ_kl in 0.6 0.8 1.0 1.2
   do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" NONE "$targ_beta"
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" NONE "$targ_kl"
   done
 else
   for ref_model_name in ${ref_models[@]}
