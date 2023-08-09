@@ -22,9 +22,9 @@ else
 fi
 
 if [ -n "$6" ]; then
-  beta_exp="$6"
+  exp="$6"
 else
-  beta_exp=NONE
+  exp=NONE
 fi
 
 if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]] || [[ "$task_name" == human_judgement ]]; then
@@ -59,18 +59,23 @@ else
 fi
 
 #partition=contrib-gpu-long
-if [[ "$beta_exp" == false ]] || [[ "$beta_exp" == NONE ]]; then
+if [[ "$exp" == beta ]]; then
+  for beta in 0.1 0.15 0.2 0.22 0.25 0.3
+  do
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2" NONE "$group" "$kl_type" "$off_policy" "$beta"
+  done
+elif [[ "$exp" == targ_beta ]]; then
+  for targ_beta in 0.6 0.8 1.0 1.2
+  do
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" NONE "$targ_beta"
+  done
+else
   for ref_model_name in ${ref_models[@]}
   do
     sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy"
     # bash slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy" # for testing
   done
-else
   # for beta in 1.5 2.0 2.5 3.0 3.5
-  for beta in 0.1 0.15 0.2 0.22 0.25 0.3
-  do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-medium" NONE "$group" "$kl_type" "$off_policy" "$beta"
-  done
 fi
 # speech-gpu
 # contrib-gpu-long

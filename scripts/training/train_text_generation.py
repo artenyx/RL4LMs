@@ -40,6 +40,7 @@ def main(
     kl_type: str,
     off_policy: bool,
     beta_kl: float,
+    targ_kl: float,
 ):
 
     # load the config file
@@ -53,6 +54,8 @@ def main(
     config["alg"]["args"]["off_policy"] = off_policy
     if beta_kl is not None:
         config["alg"]["kl_div"]["coeff"] = beta_kl
+    if targ_kl is not None:
+        config["alg"]["kl_div"]["target_kl"] = targ_kl
 
     base_model_str, ref_model_str = "", ""
     if base_model_name is not None:
@@ -169,6 +172,12 @@ if __name__ == "__main__":
         help="value for beta kl",
         default=None,
     )
+    parser.add_argument(
+        "--targ_kl",
+        type=float,
+        help="value for targ kl",
+        default=None,
+    )
 
     args = parser.parse_args()
     args.off_policy = args.off_policy == "true"
@@ -187,4 +196,5 @@ if __name__ == "__main__":
         args.kl_type,
         args.off_policy,
         args.beta_kl,
+        args.targ_kl,
     )
