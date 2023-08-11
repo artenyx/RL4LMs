@@ -65,7 +65,7 @@ if [[ "$exp" == init_beta ]]; then
     sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2" NONE "$group" "$kl_type" "$off_policy" "$beta"
   done
 elif [[ "$exp" == targ_kl ]]; then
-  for targ_kl in 0.6 0.8 1.0 1.2
+  for targ_kl in 1.4 1.6 1.8 2.0
   do
     sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" NONE "$targ_kl"
   done
