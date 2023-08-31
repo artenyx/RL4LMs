@@ -7,8 +7,8 @@ experiment_name="$4"
 group="$5"
 kl_type="$6"
 off_policy="$7"
-beta_kl="$8"
-targ_kl="$9"
+sweep_param="$8"
+sweep_value="$9"
 
 args=()
 if [[ "$base_model_name" == *gpt2* ]]; then
@@ -34,11 +34,11 @@ if [ -n "$7" ] && [ "$7" != NONE ]; then
 fi
 
 if [ -n "$8" ] && [ "$8" != NONE ]; then
-  args+=("--beta_kl $beta_kl")
+  args+=("--sweep_parameter $sweep_param")
 fi
 
 if [ -n "$9" ] && [ "$9" != NONE ]; then
-  args+=("--targ_kl $targ_kl")
+  args+=("--sweep_value $sweep_value")
 fi
 
 args+=("--base_path_to_store_results /share/data/kartik-collab/geraldkwhite/" \

@@ -10,21 +10,36 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
+param_path_registry = {
+    "targ_kl": "alg.kl_div.target_kl",
+    "init_beta": "alg.kl_div.coeff",
+    "lr": "alg.args.learning_rate"
+}
+
+task_name_registry = {
+    "imdb_text_continuation": "imdb",
+    "dialog": "dd",
+    "common_gen": "cg",
+    "summarization": "summ",
+    "narrative_qa": "nqa",
+    "iwslt2017": "iwslt",
+    "human_judgement": "hj",
+}
 
 def shorten_task_name(task_name: str
                       ) -> str:
-    task_shorts = {"imdb_text_continuation": "imdb",
-                   "dialog": "dd",
-                   "common_gen": "cg",
-                   "summarization": "summ",
-                   "narrative_qa": "nqa",
-                   "iwslt2017": "iwslt",
-                   "human_judgement": "hj",
-                   }
-    task_name = task_shorts[task_name] if task_name in list(task_shorts) else task_name
+    task_name = task_name_registry[task_name] if task_name in list(task_name_registry) else task_name
     task_name += "_"
     return task_name
 
+
+def update_config_parameter(config, param_key, param_value):
+    param_path = param_path_registry[param_key]
+    keys = param_path.split(".")
+    current_level = config
+    for key in keys[:-1]:
+        current_level = current_level.get(key, {})
+    current_level[keys[-1]] = param_value
 
 
 def main(
@@ -40,8 +55,8 @@ def main(
     group: str,
     kl_type: str,
     off_policy: bool,
-    beta_kl: float,
-    targ_kl: float,
+    sweep_parameter: str,
+    sweep_value: float,
 ):
 
     # load the config file
@@ -53,10 +68,9 @@ def main(
     config["wandb_group_id"] = group
     config["alg"]["args"]["kl_type"] = kl_type
     config["alg"]["args"]["off_policy"] = off_policy
-    if beta_kl is not None:
-        config["alg"]["kl_div"]["coeff"] = beta_kl
-    if targ_kl is not None:
-        config["alg"]["kl_div"]["target_kl"] = targ_kl
+
+    if sweep_parameter is not None:
+        update_config_parameter(config, sweep_parameter, sweep_value)
 
     base_model_str, ref_model_str = "", ""
     if base_model_name is not None:
@@ -168,15 +182,15 @@ if __name__ == "__main__":
         choices=["true", "false"]
     )
     parser.add_argument(
-        "--beta_kl",
-        type=float,
-        help="value for beta kl",
+        "--sweep_parameter",
+        type=str,
+        help="if performing sweep, parameter name",
         default=None,
     )
     parser.add_argument(
-        "--targ_kl",
+        "--sweep_value",
         type=float,
-        help="value for targ kl",
+        help="if performing sweep, parameter value",
         default=None,
     )
 
@@ -196,6 +210,6 @@ if __name__ == "__main__":
         args.group,
         args.kl_type,
         args.off_policy,
-        args.beta_kl,
-        args.targ_kl,
+        args.sweep_parameter,
+        args.sweep_value,
     )
