@@ -26,6 +26,7 @@ def shorten_task_name(task_name: str
     return task_name
 
 
+
 def main(
     config_path: str,
     project_name: str,
