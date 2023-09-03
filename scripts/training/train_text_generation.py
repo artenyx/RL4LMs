@@ -79,7 +79,7 @@ def main(
     if group is not None:
         experiment_name = group + "_"
         if sweep_parameter is not None:
-            experiment_name += sweep_parameter + str(sweep_value) + "_" + dt
+            experiment_name += sweep_parameter + str(sweep_value).replace("-","") + "_" + dt
         else:
             experiment_name += dt
 
