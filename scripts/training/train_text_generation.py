@@ -13,7 +13,8 @@ from rl4lms.envs.text_generation.training_utils import (
 param_path_registry = {
     "targ_kl": "alg.kl_div.target_kl",
     "init_beta": "alg.kl_div.coeff",
-    "lr": "alg.args.learning_rate"
+    "lr": "alg.args.learning_rate",
+    "ref_size": "alg.policy.args.ref_model_name",
 }
 
 task_name_registry = {
