@@ -57,7 +57,7 @@ def main(
     kl_type: str,
     off_policy: bool,
     sweep_parameter: str,
-    sweep_value: float,
+    sweep_value,
 ):
 
     # load the config file
