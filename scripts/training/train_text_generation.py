@@ -74,27 +74,19 @@ def main(
         assert group is not None, "If performing a sweep, must have group name."
         update_config_parameter(config, sweep_parameter, sweep_value)
 
+    if kl_type == "full_kl_2":
+        update_config_parameter(config, "targ_kl", 1.0)
+
     base_model_str, ref_model_str = "", ""
 
-    if group is not None:
+    if group is None:
+        experiment_name = dt
+    else:
         experiment_name = group + "_"
         if sweep_parameter is not None:
             experiment_name += str(sweep_value).replace("-","") + "_" + dt
         else:
             experiment_name += dt
-
-    if base_model_name is not None:
-        config["alg"]["policy"]["args"]["model_name"] = base_model_name
-        base_model_str = base_model_name.replace("-", "") + "base_"
-    if ref_model_name is not None:
-        config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
-        ref_model_str = ref_model_name.replace("-", "") + "ref_"
-    if experiment_name is None:
-        experiment_name = shorten_task_name(task_name) + base_model_str + ref_model_str + dt
-
-    if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
-        config["tokenizer"]["model_name"] = "gpt2"
-
 
     # load tracker
     tracker = Tracker(
