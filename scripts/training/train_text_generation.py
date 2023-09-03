@@ -199,13 +199,15 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--sweep_value",
-        type=float,
+        type=str,
         help="if performing sweep, parameter value",
         default=None,
     )
 
     args = parser.parse_args()
     args.off_policy = args.off_policy == "true"
+    if args.sweep_value.isnumeric():
+        args.sweep_value = float(args.sweep_value)
 
     main(
         args.config_path,
