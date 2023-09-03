@@ -70,9 +70,18 @@ def main(
     config["alg"]["args"]["off_policy"] = off_policy
 
     if sweep_parameter is not None:
+        assert group is not None, "If performing a sweep, must have group name."
         update_config_parameter(config, sweep_parameter, sweep_value)
 
     base_model_str, ref_model_str = "", ""
+
+    if group is not None:
+        experiment_name = group + "_"
+        if sweep_parameter is not None:
+            experiment_name += sweep_parameter + str(sweep_value) + "_" + dt
+        else:
+            experiment_name += dt
+
     if base_model_name is not None:
         config["alg"]["policy"]["args"]["model_name"] = base_model_name
         base_model_str = base_model_name.replace("-", "") + "base_"
