@@ -206,6 +206,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.off_policy = args.off_policy == "true"
     if args.sweep_value.isnumeric():
+        print("**CONVERTED TO NUMERIC**")
         args.sweep_value = float(args.sweep_value)
 
     main(
