@@ -88,6 +88,13 @@ def main(
         else:
             experiment_name += dt
 
+    if base_model_name is not None:
+        config["alg"]["policy"]["args"]["model_name"] = base_model_name
+    if ref_model_name is not None:
+        config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
+    if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
+        config["tokenizer"]["model_name"] = "gpt2"
+
     # load tracker
     tracker = Tracker(
         base_path_to_store_results,
