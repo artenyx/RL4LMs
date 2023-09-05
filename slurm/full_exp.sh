@@ -67,7 +67,7 @@ if [[ "$exp" == init_beta ]]; then
 elif [[ "$exp" == targ_kl ]]; then
   for targ_kl in 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
   do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" "$exp" "$targ_kl"
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-large" NONE "$group" "$kl_type" "$off_policy" "$exp" "$targ_kl"
   done
 elif [[ "$exp" == lr ]]; then
   for lr in 0.0000006 0.0000007 0.0000008 0.0000009 0.000001
