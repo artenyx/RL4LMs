@@ -27,6 +27,13 @@ else
   exp=NONE
 fi
 
+if [ -n "$7" ]; then
+  exp_arg="$7"
+else
+  exp_arg=NONE
+fi
+
+
 # setting base model
 if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]] || [[ "$task_name" == human_judgement ]]; then
   if [[ $base_model_sm == true ]]; then
@@ -60,21 +67,21 @@ fi
 if [[ "$exp" == init_beta ]]; then
   for beta in 0.1 0.15 0.2 0.22 0.25 0.3
   do
-    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name gpt2 NONE $group $kl_type $off_policy $exp $beta"
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy $exp $beta"
     echo "sbatch arguments: $sbatch_params"
     sbatch "$sbatch_params"
   done
 elif [[ "$exp" == targ_kl ]]; then
   for targ_kl in 0.7 0.9 1.1 # 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
   do
-    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name gpt2-large NONE $group $kl_type $off_policy $exp $targ_kl"
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy $exp $targ_kl"
     echo "sbatch arguments: $sbatch_params"
     sbatch "$sbatch_params"
   done
 elif [[ "$exp" == lr ]]; then
   for lr in 0.0000006 0.0000007 0.0000008 0.0000009 0.000001
   do
-    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name gpt2-large NONE $group $kl_type $off_policy $exp $lr"
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy $exp $lr"
     echo "sbatch arguments: $sbatch_params"
     sbatch "$sbatch_params"
   done
