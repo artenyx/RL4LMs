@@ -76,6 +76,7 @@ elif [[ "$exp" == targ_kl ]]; then
   do
     sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy $exp $targ_kl"
     echo "sbatch arguments: $sbatch_params"
+    echo "check"
     sbatch $sbatch_params
   done
 elif [[ "$exp" == lr ]]; then
