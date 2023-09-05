@@ -27,6 +27,7 @@ else
   exp=NONE
 fi
 
+# setting base model
 if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]] || [[ "$task_name" == human_judgement ]]; then
   if [[ $base_model_sm == true ]]; then
     base_model_name=distilgpt2
@@ -49,38 +50,39 @@ elif [[ "$base_model_name" == *t5* ]]; then
   ref_models=("t5-base" "t5-large" "t5-3b" "t5-11b")
 fi
 
-#setting beta experiments
-
-
-#setting correct gpu partition
-if [[ "$group" == *ENVS* ]] || [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
+# setting gpu partition
+if [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
 else
-  partition=speech-gpu
+  partition=speech-gpu #contrib-gpu-long
 fi
 
-#partition=contrib-gpu-long
+# setting experiment type
 if [[ "$exp" == init_beta ]]; then
   for beta in 0.1 0.15 0.2 0.22 0.25 0.3
   do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2" NONE "$group" "$kl_type" "$off_policy" "$exp" "$beta"
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name gpt2 NONE $group $kl_type $off_policy $exp $beta"
+    echo "sbatch arguments: $sbatch_params"
+    sbatch "$sbatch_params"
   done
 elif [[ "$exp" == targ_kl ]]; then
-  for targ_kl in 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
+  for targ_kl in 0.7 0.9 1.1 # 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
   do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-large" NONE "$group" "$kl_type" "$off_policy" "$exp" "$targ_kl"
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name gpt2-large NONE $group $kl_type $off_policy $exp $targ_kl"
+    echo "sbatch arguments: $sbatch_params"
+    sbatch "$sbatch_params"
   done
 elif [[ "$exp" == lr ]]; then
   for lr in 0.0000006 0.0000007 0.0000008 0.0000009 0.000001
   do
-    echo sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-large" NONE "$group" "$kl_type" "$off_policy" "$exp" "$lr"
-    #sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-large" NONE "$group" "$kl_type" "$off_policy" "$exp" "$lr"
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name gpt2-large NONE $group $kl_type $off_policy $exp $lr"
+    echo "sbatch arguments: $sbatch_params"
+    sbatch "$sbatch_params"
   done
 elif [[ "$exp" == ref_size ]]; then
   for ref_model_name in ${ref_models[@]}
   do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy" "$exp" "$ref_model_name"
-    # bash slurm/single_exp.sh "$task_name" "$base_model_name" "$ref_model_name" NONE "$group" "$kl_type" "$off_policy" # for testing
+    sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $ref_model_name NONE $group $kl_type $off_policy $exp $ref_model_name"
+    echo "sbatch arguments: $sbatch_params"
+    sbatch "$sbatch_params"
   done
 fi
-# speech-gpu
-# contrib-gpu-long
