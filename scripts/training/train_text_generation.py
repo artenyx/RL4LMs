@@ -76,7 +76,7 @@ def main(
 
     if kl_type == "full_kl_2" and sweep_parameter != "targ_kl":
         new_targ_kl = 1.6 if ref_model_name == "gpt2-large" else 1.2
-        update_config_parameter(config, "targ_kl", 1.0)
+        update_config_parameter(config, "targ_kl", new_targ_kl)
 
     base_model_str, ref_model_str = "", ""
 
