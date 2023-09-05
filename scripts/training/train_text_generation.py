@@ -74,7 +74,7 @@ def main(
         assert group is not None, "If performing a sweep, must have group name."
         update_config_parameter(config, sweep_parameter, sweep_value)
 
-    if kl_type == "full_kl_2":
+    if kl_type == "full_kl_2" and sweep_parameter != "targ_kl":
         update_config_parameter(config, "targ_kl", 1.0)
 
     base_model_str, ref_model_str = "", ""
