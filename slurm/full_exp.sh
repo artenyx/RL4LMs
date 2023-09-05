@@ -72,7 +72,7 @@ if [[ "$exp" == init_beta ]]; then
     sbatch $sbatch_params
   done
 elif [[ "$exp" == targ_kl ]]; then
-  for targ_kl in 1.4 1.6 1.8 2.0 # 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
+  for targ_kl in 0.5 0.8 1.0 1.2 1.4 1.6 1.8 2.0 # 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
   do
     sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy $exp $targ_kl"
     echo "sbatch arguments: $sbatch_params"
