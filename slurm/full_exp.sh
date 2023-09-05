@@ -72,7 +72,7 @@ elif [[ "$exp" == targ_kl ]]; then
 elif [[ "$exp" == lr ]]; then
   for lr in 0.0000006 0.0000007 0.0000008 0.0000009 0.000001
   do
-    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-large" NONE "$group" "$kl_type" "$off_policy" "$exp" "$lr"
+    sbatch -p "$partition" -C 48g slurm/single_exp.sh "$task_name" "$base_model_name" "gpt2-xl" NONE "$group" "$kl_type" "$off_policy" "$exp" "$lr"
   done
 elif [[ "$exp" == ref_size ]]; then
   for ref_model_name in ${ref_models[@]}
