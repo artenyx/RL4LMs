@@ -75,8 +75,9 @@ def main(
         update_config_parameter(config, sweep_parameter, sweep_value)
 
     if kl_type == "full_kl_2" and sweep_parameter != "targ_kl":
-        new_targ_kl = 1.6 if ref_model_name == "gpt2-large" else 1.2
-        update_config_parameter(config, "targ_kl", new_targ_kl)
+        best_targ_kl_registry = {"gpt2-xl": 1.2, "gpt-large": 1.6}
+        best_targ_kl = best_targ_kl_registry[ref_model_name]
+        update_config_parameter(config, "targ_kl", best_targ_kl)
 
     base_model_str, ref_model_str = "", ""
 
