@@ -102,7 +102,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
                 self._value_head = torch.nn.DataParallel(
                     self._value_head.to(self.device)
                 )
-        print(f"**{torch.cuda.is_available()}**")
+        print(f"**CUDA AVAIL: {torch.cuda.is_available()}**")
 
 
     def _prepare_inputs_for_model(
