@@ -10,31 +10,27 @@ from rl4lms.envs.text_generation.training_utils import (
     SupervisedTrainer,
 )
 
-param_path_registry = {
-    "targ_kl": "alg.kl_div.target_kl",
-    "init_beta": "alg.kl_div.coeff",
-    "lr": "alg.args.learning_rate",
-    "ref_size": "alg.policy.args.ref_model_name",
-}
-
-task_name_registry = {
-    "imdb_text_continuation": "imdb",
-    "dialog": "dd",
-    "common_gen": "cg",
-    "summarization": "summ",
-    "narrative_qa": "nqa",
-    "iwslt2017": "iwslt",
-    "human_judgement": "hj",
-}
-
-def shorten_task_name(task_name: str
-                      ) -> str:
-    task_name = task_name_registry[task_name] if task_name in list(task_name_registry) else task_name
-    task_name += "_"
-    return task_name
+'''
+TO DO:
+- Change experiment name to wandb_id so that you can pass in an ID if you need to continue a run, but I think actual experiment name can be different
+'''
 
 
-def update_config_parameter(config, param_key, param_value):
+class ParamPathRegistryDict(dict):
+    def __init__(self, config, initial_dict=None):
+        super().__init__()
+        self.config = config
+        if initial_dict:
+            self.update(initial_dict)
+
+    def __missing__(self, key):
+        if key in self.config:
+            return key
+        else:
+            KeyError(f"{key} key not found in first level of config and is not included in parameter path registry.")
+
+
+def update_config_parameter(config, param_path_registry, param_key, param_value):
     param_path = param_path_registry[param_key]
     keys = param_path.split(".")
     current_level = config
@@ -43,59 +39,87 @@ def update_config_parameter(config, param_key, param_value):
     current_level[keys[-1]] = param_value
 
 
+def update_config_for_experiment(config, param_path_registry, update_params):
+    param_path_registry = ParamPathRegistryDict(config, initial_dict=param_path_registry)
+    dt, task_name, group, kl_type, off_policy, base_model_name, ref_model_name, sweep_parameter, sweep_value = update_params.values()
+
+    update_config_parameter(config, param_path_registry, "wandb_id", dt)
+    update_config_parameter(config, param_path_registry, "wandb_group_id", group)
+    update_config_parameter(config, param_path_registry, "kl_type", kl_type)
+    update_config_parameter(config, param_path_registry, "off_policy", off_policy)
+
+    if sweep_parameter is not None:
+        assert group is not None, "If performing a sweep, must have group name."
+        update_config_parameter(config, param_path_registry, sweep_parameter, sweep_value)
+
+    if kl_type == "full_kl_2" and sweep_parameter != "targ_kl" and sweep_parameter != "ref_size":
+        best_targ_kl_registry = {"gpt2-xl": 1.6, "gpt2-large": 1.4}
+        best_targ_kl = best_targ_kl_registry[ref_model_name]
+        update_config_parameter(config, param_path_registry, "targ_kl", best_targ_kl)
+
+    if base_model_name is not None:
+        update_config_parameter(config, param_path_registry, "base_model_name", base_model_name)
+    if ref_model_name is not None:
+        update_config_parameter(config, param_path_registry, "ref_model_name", ref_model_name)
+    if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
+        update_config_parameter(config, param_path_registry, "tokenizer", "gpt2")
+
+
 def main(
-    config_path: str,
-    project_name: str,
-    experiment_name: str,
-    base_path_to_store_results: str,
-    entity_name: str,
-    log_to_wandb: bool,
-    base_model_name: str,
-    ref_model_name: str,
-    task_name: str,
-    group: str,
-    kl_type: str,
-    off_policy: bool,
-    sweep_parameter: str,
-    sweep_value,
+        config_path: str,
+        project_name: str,
+        experiment_name: str,
+        base_path_to_store_results: str,
+        entity_name: str,
+        log_to_wandb: bool,
+        base_model_name: str,
+        ref_model_name: str,
+        task_name: str,
+        group: str,
+        kl_type: str,
+        off_policy: bool,
+        sweep_parameter: str,
+        sweep_value,
 ):
+    param_path_registry = {
+        "targ_kl": "alg.kl_div.target_kl",
+        "init_beta": "alg.kl_div.coeff",
+        "lr": "alg.args.learning_rate",
+        "ref_size": "alg.policy.args.ref_model_name",
+        "wandb_id": "wandb_id",
+        "kl_type": "alg.args.kl_type",
+        "off_policy": "alg.args.off_policy",
+        "base_model_name": "alg.policy.args.model_name",
+        "ref_model_name": "alg.policy.args.ref_model_name",
+        "tokenizer": "tokenizer.model_name",
+    }
+
+    update_params = {
+        "dt": datetime.now().strftime("%m%d%y%H%M%S%f"),
+        "task_name": task_name,
+        "group": group,
+        "kl_type": kl_type,
+        "off_policy": off_policy,
+        "base_model_name": base_model_name,
+        "ref_model_name": ref_model_name,
+        "sweep_parameter": sweep_parameter,
+        "sweep_value": sweep_value,
+    }
 
     # load the config file
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
 
-    dt = datetime.now().strftime("%m%d%y%H%M%S%f")
-    config["wandb_id"] = dt if experiment_name is None else experiment_name[-12:]
-    config["wandb_group_id"] = group
-    config["alg"]["args"]["kl_type"] = kl_type
-    config["alg"]["args"]["off_policy"] = off_policy
-
-    if sweep_parameter is not None:
-        assert group is not None, "If performing a sweep, must have group name."
-        update_config_parameter(config, sweep_parameter, sweep_value)
-
-    if kl_type == "full_kl_2" and sweep_parameter != "targ_kl" and sweep_parameter != "ref_size":
-        best_targ_kl_registry = {"gpt2-xl": 0.5, "gpt2-large": 1.4}
-        best_targ_kl = best_targ_kl_registry[ref_model_name]
-        update_config_parameter(config, "targ_kl", best_targ_kl)
-
-    base_model_str, ref_model_str = "", ""
+    update_config_for_experiment(config, param_path_registry, update_params)
 
     if group is None:
-        experiment_name = dt
+        experiment_name = config["wandb_id"]
     else:
         experiment_name = group + "_"
         if sweep_parameter is not None:
-            experiment_name += str(sweep_value).replace("-","") + "_" + dt
+            experiment_name += str(sweep_value).replace("-", "") + "_" + config["wandb_id"]
         else:
-            experiment_name += dt
-
-    if base_model_name is not None:
-        config["alg"]["policy"]["args"]["model_name"] = base_model_name
-    if ref_model_name is not None:
-        config["alg"]["policy"]["args"]["ref_model_name"] = ref_model_name
-    if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
-        config["tokenizer"]["model_name"] = "gpt2"
+            experiment_name += config["wandb_id"]
 
     # load tracker
     tracker = Tracker(
@@ -229,3 +253,23 @@ if __name__ == "__main__":
         args.sweep_parameter,
         args.sweep_value,
     )
+
+'''scratch code
+
+    task_name_registry = {
+        "imdb_text_continuation": "imdb",
+        "dialog": "dd",
+        "common_gen": "cg",
+        "summarization": "summ",
+        "narrative_qa": "nqa",
+        "iwslt2017": "iwslt",
+        "human_judgement": "hj",
+    }
+    def shorten_task_name(task_name: str
+                      ) -> str:
+    task_name = task_name_registry[task_name] if task_name in list(task_name_registry) else task_name
+    task_name += "_"
+    return task_name
+
+
+'''
