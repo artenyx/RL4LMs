@@ -88,7 +88,7 @@ def main(
         "init_beta": "alg.kl_div.coeff",
         "lr": "alg.args.learning_rate",
         "ref_size": "alg.policy.args.ref_model_name",
-        "wandb_id": "wandb_id",
+        #"wandb_id": "wandb_id",
         "kl_type": "alg.args.kl_type",
         "off_policy": "alg.args.off_policy",
         "base_model_name": "alg.policy.args.model_name",
