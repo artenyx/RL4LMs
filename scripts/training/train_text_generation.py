@@ -98,7 +98,7 @@ def main(
     with open(config_path, "r") as fp:
         config = yaml.safe_load(fp)
 
-    update_config_for_experiment(config, param_path_registry, update_params)
+    update_config_for_experiment(config, update_params)
 
     if group is None:
         experiment_name = config["wandb_id"]
