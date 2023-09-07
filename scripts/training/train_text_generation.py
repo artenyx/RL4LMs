@@ -24,11 +24,9 @@ class ParamPathRegistryDict(dict):
             self.update(initial_dict)
 
     def __missing__(self, key):
-        if key in self.config:
-            return key
-        else:
-            raise KeyError(f"{key} key not found in first level of config and is not included in parameter path registry.")
-
+        if key not in self.config:
+            print(f"**KEY {key} CREATED**")
+        return key
 
 def update_config_parameter(config, param_path_registry, param_key, param_value):
     param_path = param_path_registry[param_key]
