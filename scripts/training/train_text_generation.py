@@ -15,20 +15,22 @@ TO DO:
 - Change experiment name to wandb_id so that you can pass in an ID if you need to continue a run, but I think actual experiment name can be different
 '''
 
+param_path_registry = {
+        "wandb_id": "wandb_id",
+        "wandb_group_id": "wandb_group_id",
+        "targ_kl": "alg.kl_div.target_kl",
+        "init_beta": "alg.kl_div.coeff",
+        "lr": "alg.args.learning_rate",
+        "ref_size": "alg.policy.args.ref_model_name",
+        "kl_type": "alg.args.kl_type",
+        "off_policy": "alg.args.off_policy",
+        "base_model_name": "alg.policy.args.model_name",
+        "ref_model_name": "alg.policy.args.ref_model_name",
+        "tokenizer": "tokenizer.model_name",
+    }
 
-class ParamPathRegistryDict(dict):
-    def __init__(self, config, initial_dict=None):
-        super().__init__()
-        self.config = config
-        if initial_dict:
-            self.update(initial_dict)
 
-    def __missing__(self, key):
-        if key not in self.config:
-            print(f"**KEY {key} CREATED**")
-        return key
-
-def update_config_parameter(config, param_path_registry, param_key, param_value):
+def update_config_parameter(config, param_key, param_value):
     param_path = param_path_registry[param_key]
     keys = param_path.split(".")
     current_level = config
@@ -37,32 +39,30 @@ def update_config_parameter(config, param_path_registry, param_key, param_value)
     current_level[keys[-1]] = param_value
 
 
-def update_config_for_experiment(config, param_path_registry, update_params):
-    param_path_registry = ParamPathRegistryDict(config, initial_dict=param_path_registry)
+def update_config_for_experiment(config, update_params):
     dt, task_name, group, kl_type, off_policy, base_model_name, ref_model_name, sweep_parameter, sweep_value = update_params.values()
 
-    update_config_parameter(config, param_path_registry, "wandb_id", dt)
+    update_config_parameter(config, "wandb_id", dt)
     if group is not None:
-        print(f"**{group}**")
-        update_config_parameter(config, param_path_registry, "wandb_group_id", group)
-    update_config_parameter(config, param_path_registry, "kl_type", kl_type)
-    update_config_parameter(config, param_path_registry, "off_policy", off_policy)
+        update_config_parameter(config, "wandb_group_id", group)
+    update_config_parameter(config, "kl_type", kl_type)
+    update_config_parameter(config, "off_policy", off_policy)
 
     if sweep_parameter is not None:
         assert group is not None, "If performing a sweep, must have group name."
-        update_config_parameter(config, param_path_registry, sweep_parameter, sweep_value)
+        update_config_parameter(config, sweep_parameter, sweep_value)
 
     if kl_type == "full_kl_2" and sweep_parameter != "targ_kl" and sweep_parameter != "ref_size":
         best_targ_kl_registry = {"gpt2-xl": 1.6, "gpt2-large": 1.4}
         best_targ_kl = best_targ_kl_registry[ref_model_name]
-        update_config_parameter(config, param_path_registry, "targ_kl", best_targ_kl)
+        update_config_parameter(config, "targ_kl", best_targ_kl)
 
     if base_model_name is not None:
-        update_config_parameter(config, param_path_registry, "base_model_name", base_model_name)
+        update_config_parameter(config, "base_model_name", base_model_name)
     if ref_model_name is not None:
-        update_config_parameter(config, param_path_registry, "ref_model_name", ref_model_name)
+        update_config_parameter(config, "ref_model_name", ref_model_name)
     if task_name == "imdb_text_continuation" and "imdb" not in base_model_name:
-        update_config_parameter(config, param_path_registry, "tokenizer", "gpt2")
+        update_config_parameter(config, "tokenizer", "gpt2")
 
 
 def main(
@@ -81,17 +81,6 @@ def main(
         sweep_parameter: str,
         sweep_value,
 ):
-    param_path_registry = {
-        "targ_kl": "alg.kl_div.target_kl",
-        "init_beta": "alg.kl_div.coeff",
-        "lr": "alg.args.learning_rate",
-        "ref_size": "alg.policy.args.ref_model_name",
-        "kl_type": "alg.args.kl_type",
-        "off_policy": "alg.args.off_policy",
-        "base_model_name": "alg.policy.args.model_name",
-        "ref_model_name": "alg.policy.args.ref_model_name",
-        "tokenizer": "tokenizer.model_name",
-    }
 
     update_params = {
         "dt": datetime.now().strftime("%m%d%y%H%M%S%f"),
@@ -254,6 +243,19 @@ if __name__ == "__main__":
     )
 
 '''scratch code
+
+class ParamPathRegistryDict(dict):
+    def __init__(self, config, initial_dict=None):
+        super().__init__()
+        self.config = config
+        if initial_dict:
+            self.update(initial_dict)
+
+    def __missing__(self, key):
+        if key not in self.config:
+            print(f"**KEY {key} CREATED**")
+        return key
+
 
     task_name_registry = {
         "imdb_text_continuation": "imdb",
