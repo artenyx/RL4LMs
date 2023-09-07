@@ -27,7 +27,7 @@ class ParamPathRegistryDict(dict):
         if key in self.config:
             return key
         else:
-            KeyError(f"{key} key not found in first level of config and is not included in parameter path registry.")
+            raise KeyError(f"{key} key not found in first level of config and is not included in parameter path registry.")
 
 
 def update_config_parameter(config, param_path_registry, param_key, param_value):
@@ -88,7 +88,6 @@ def main(
         "init_beta": "alg.kl_div.coeff",
         "lr": "alg.args.learning_rate",
         "ref_size": "alg.policy.args.ref_model_name",
-        #"wandb_id": "wandb_id",
         "kl_type": "alg.args.kl_type",
         "off_policy": "alg.args.off_policy",
         "base_model_name": "alg.policy.args.model_name",
