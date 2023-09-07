@@ -44,7 +44,8 @@ def update_config_for_experiment(config, param_path_registry, update_params):
     dt, task_name, group, kl_type, off_policy, base_model_name, ref_model_name, sweep_parameter, sweep_value = update_params.values()
 
     update_config_parameter(config, param_path_registry, "wandb_id", dt)
-    update_config_parameter(config, param_path_registry, "wandb_group_id", group)
+    if group is not None:
+        update_config_parameter(config, param_path_registry, "wandb_group_id", group)
     update_config_parameter(config, param_path_registry, "kl_type", kl_type)
     update_config_parameter(config, param_path_registry, "off_policy", off_policy)
 
