@@ -45,6 +45,7 @@ def update_config_for_experiment(config, param_path_registry, update_params):
 
     update_config_parameter(config, param_path_registry, "wandb_id", dt)
     if group is not None:
+        print("**GROUP**")
         update_config_parameter(config, param_path_registry, "wandb_group_id", group)
     update_config_parameter(config, param_path_registry, "kl_type", kl_type)
     update_config_parameter(config, param_path_registry, "off_policy", off_policy)
