@@ -65,7 +65,7 @@ fi
 
 # setting experiment type
 if [[ "$exp" == init_beta ]]; then
-  for beta in 0.1 0.15 0.2 0.22 0.25 0.3
+  for beta in 0.2 0.3 0.4 0.5
   do
     sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy $exp $beta"
     echo "sbatch arguments: $sbatch_params"
