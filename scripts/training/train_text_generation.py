@@ -57,15 +57,10 @@ def update_config_for_experiment(config, update_params):
             best_targ_kl_registry = {"gpt2-xl": 1.2, "gpt2-large": 1.0}
             best_targ_kl = best_targ_kl_registry[ref_model_name]
             update_config_parameter(config, "targ_kl", best_targ_kl)
-        elif sweep_parameter != "lr" and sweep_parameter != "ref_size":
+        if sweep_parameter != "lr" and sweep_parameter != "ref_size":
             best_lr_registry = {"gpt2-xl": 0.0000008, "gpt2-large": 0.0000007}
             best_lr = best_lr_registry[ref_model_name]
             update_config_parameter(config, "lr", best_lr)
-
-    if  sweep_parameter != "targ_kl" and sweep_parameter != "ref_size":
-        best_targ_kl_registry = {"gpt2-xl": 1.2, "gpt2-large": 1.0}
-        best_targ_kl = best_targ_kl_registry[ref_model_name]
-        update_config_parameter(config, "targ_kl", best_targ_kl)
 
     if base_model_name is not None:
         update_config_parameter(config, "base_model_name", base_model_name)
