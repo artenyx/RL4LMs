@@ -58,8 +58,20 @@ def update_config_for_experiment(config, update_params):
 
     if sweep_parameter is not None:
         assert group is not None, "If performing a sweep, must have group name."
-        update_config_parameter(config, sweep_parameter, sweep_value)
+        delim = ","
+        sweep_parameter = sweep_parameter.split(delim)
+        sweep_value = sweep_value.split(delim)
+        for param, val in zip(sweep_parameter, sweep_value):
 
+            # convert sweep value to float when necessary
+            try:
+                val = float(val)
+            except ValueError:
+                pass
+            # update parameter value combination
+            update_config_parameter(config, param, val)
+
+    # custom parameters for full_kl_2 kl type
     if kl_type == "full_kl_2":
         if sweep_parameter != "targ_kl" and sweep_parameter != "ref_size":
             best_targ_kl_registry = {"gpt2-xl": 0.5, "gpt2-large": 0.5}
@@ -94,7 +106,7 @@ def main(
         kl_type: str,
         off_policy: bool,
         sweep_parameter: str,
-        sweep_value,
+        sweep_value: str,
 ):
 
     update_params = {
@@ -222,23 +234,18 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep_parameter",
         type=str,
-        help="if performing sweep, parameter name",
+        help="if performing sweep, parameter name. if multiple params, separate with $ as delimiter.",
         default=None,
     )
     parser.add_argument(
         "--sweep_value",
         type=str,
-        help="if performing sweep, parameter value",
+        help="if performing sweep, parameter value. if multiple params, separate with $ as delimiter.",
         default=None,
     )
 
     args = parser.parse_args()
     args.off_policy = args.off_policy == "true"
-    try:
-        float(args.sweep_value)
-        args.sweep_value = float(args.sweep_value)
-    except ValueError:
-        pass
 
     main(
         args.config_path,
