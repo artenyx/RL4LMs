@@ -83,7 +83,7 @@ elif [[ "$exp" == targ_kl_lr_grid ]]; then
   do
     for targ_kl in 0.5 0.8 1.0 1.2 1.4 1.6 # 4.0 5.0 6.0 7.0 8.0 # 0.6 0.8 1.0 1.2 # 1.4 1.6 1.8 2.0 #ce 4.0 5.0 6.0 7.0 8.0
     do
-      sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy targ_kl,lr \"$targ_kl,$lr\""
+      sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy targ_kl,lr $targ_kl,$lr"
       echo "sbatch arguments: $sbatch_params"
       #sbatch $sbatch_params
     done
