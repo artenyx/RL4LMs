@@ -234,13 +234,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep_parameter",
         type=str,
-        help="if performing sweep, parameter name. if multiple params, separate with $ as delimiter.",
+        help="if performing sweep, parameter name. if multiple params, separate with \",\" as delimiter.",
         default=None,
     )
     parser.add_argument(
         "--sweep_value",
         type=str,
-        help="if performing sweep, parameter value. if multiple params, separate with $ as delimiter.",
+        help="if performing sweep, parameter value. if multiple params, separate with \",\" as delimiter.",
         default=None,
     )
 
