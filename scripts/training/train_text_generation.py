@@ -27,7 +27,15 @@ param_path_registry = {
         "base_model_name": "alg.policy.args.model_name",
         "ref_model_name": "alg.policy.args.ref_model_name",
         "tokenizer": "tokenizer.model_name",
+        "n_envs": "env.n_envs",
     }
+
+nenvs_registry = {
+    "gpt2-xl": 15,
+    "gpt2-large": 20,
+    "gpt2-medium": 50,
+    "gpt2": 100,
+}
 
 
 def update_config_parameter(config, param_key, param_value):
@@ -61,6 +69,8 @@ def update_config_for_experiment(config, update_params):
             best_lr_registry = {"gpt2-xl": 0.0000008, "gpt2-large": 0.0000007}
             best_lr = best_lr_registry[ref_model_name]
             update_config_parameter(config, "lr", best_lr)
+
+    update_config_parameter(config, "n_envs", nenvs_registry[ref_model_name])
 
     if base_model_name is not None:
         update_config_parameter(config, "base_model_name", base_model_name)
