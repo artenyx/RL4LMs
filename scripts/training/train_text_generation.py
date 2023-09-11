@@ -73,11 +73,11 @@ def update_config_for_experiment(config, update_params):
 
     # custom parameters for full_kl_2 kl type
     if kl_type == "full_kl_2":
-        if sweep_parameter != "targ_kl" and sweep_parameter != "ref_size":
-            best_targ_kl_registry = {"gpt2-xl": 0.5, "gpt2-large": 0.5}
+        if "targ_kl" not in sweep_parameter and "ref_size" not in sweep_parameter:
+            best_targ_kl_registry = {"gpt2-xl": 1.2, "gpt2-large": 1.0}
             best_targ_kl = best_targ_kl_registry[ref_model_name]
             update_config_parameter(config, "targ_kl", best_targ_kl)
-        if sweep_parameter != "lr" and sweep_parameter != "ref_size":
+        if "lr" not in sweep_parameter and "ref_size" not in sweep_parameter:
             best_lr_registry = {"gpt2-xl": 0.0000008, "gpt2-large": 0.0000007}
             best_lr = best_lr_registry[ref_model_name]
             update_config_parameter(config, "lr", best_lr)
