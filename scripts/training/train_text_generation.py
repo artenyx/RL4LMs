@@ -73,6 +73,7 @@ def update_config_for_experiment(config, update_params):
 
     # custom parameters for full_kl_2 kl type
     if kl_type == "full_kl_2":
+        print(f"**{sweep_parameter}**")
         if "targ_kl" not in sweep_parameter and "ref_size" not in sweep_parameter:
             best_targ_kl_registry = {"gpt2-xl": 1.2, "gpt2-large": 1.0}
             best_targ_kl = best_targ_kl_registry[ref_model_name]
