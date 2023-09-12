@@ -33,8 +33,8 @@ param_path_registry = {
 nenvs_registry = {
     "gpt2-xl": 10,
     "gpt2-large": 10,
-    "gpt2-medium": 20,
-    "gpt2": 20,
+    "gpt2-medium": 10,
+    "gpt2": 10,
 }
 
 
