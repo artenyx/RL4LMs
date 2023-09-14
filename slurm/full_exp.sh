@@ -80,11 +80,11 @@ elif [[ "$exp" == targ_kl ]]; then
   done
 elif [[ "$exp" == targ_kl_lr_grid ]]; then
   for lr in 0.0000006 0.0000007 0.0000008 0.0000009 0.000001
-  if [[ "$kl_type" == full_kl_2 ]]; then
-    targ_kl_list = 0.5 0.8 1.0 1.2 1.4 1.6 #1.8 2.0 2.2 2.4 2.6
-  elif [[ "$kl_type" == cross_entropy ]]; then
-    targ_kl_list = 3.0 4.0 4.5 5.0 5.5 6.0
-  do
+    do
+    if [[ "$kl_type" == full_kl_2 ]]; then
+      targ_kl_list = 0.5 0.8 1.0 1.2 1.4 1.6 #1.8 2.0 2.2 2.4 2.6
+    elif [[ "$kl_type" == cross_entropy ]]; then
+      targ_kl_list = 3.0 4.0 4.5 5.0 5.5 6.0
     for targ_kl in targ_kl_list
     do
       sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy targ_kl,lr $targ_kl,$lr"
