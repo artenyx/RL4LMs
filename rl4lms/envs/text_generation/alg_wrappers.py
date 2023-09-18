@@ -259,6 +259,10 @@ def wrap_onpolicy_alg(
                         # compute KL rewards (KD - Cross Entropy)
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
                         kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits)
+                    elif self.kl_type == "cross_entropy_2":
+                        # compute KL rewards (KD - Cross Entropy)
+                        ref_full_logits = F.softmax(ref_full_logits, dim=1)
+                        kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits) / 10
                     else:
                         raise Exception("Error with kl_type value. Not one of the designed values.")
 
