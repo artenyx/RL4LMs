@@ -15,19 +15,19 @@ TO DO:
 - Change experiment name to wandb_id so that you can pass in an ID if you need to continue a run, but I think actual experiment name can be different
 '''
 
-param_path_registry = {
-        "wandb_id": "wandb_id",
-        "wandb_group_id": "wandb_group_id",
-        "targ_kl": "alg.kl_div.target_kl",
-        "init_beta": "alg.kl_div.coeff",
-        "lr": "alg.args.learning_rate",
-        "ref_size": "alg.policy.args.ref_model_name",
-        "kl_type": "alg.args.kl_type",
-        "off_policy": "alg.args.off_policy",
-        "base_model_name": "alg.policy.args.model_name",
-        "ref_model_name": "alg.policy.args.ref_model_name",
-        "tokenizer": "tokenizer.model_name",
-        "n_envs": "env.n_envs",
+param_registry = {
+        "wandb_id": {"path": "wandb_id", "type": str},
+        "wandb_group_id": {"path": "wandb_group_id", "type": str},
+        "targ_kl": {"path": "alg.kl_div.target_kl", "type": float},
+        "init_beta": {"path": "alg.kl_div.coeff", "type": float},
+        "lr": {"path": "alg.args.learning_rate", "type": float},
+        "ref_size": {"path": "alg.policy.args.ref_model_name", "type": str},
+        "kl_type": {"path": "alg.args.kl_type", "type": str},
+        "off_policy": {"path": "alg.args.off_policy", "type": bool},
+        "base_model_name": {"path": "alg.policy.args.model_name", "type": str},
+        "ref_model_name": {"path": "alg.policy.args.ref_model_name", "type": str},
+        "tokenizer": {"path": "tokenizer.model_name", "type": str},
+        "n_envs": {"path": "env.n_envs", "type": int},
     }
 
 nenvs_registry = {
@@ -39,11 +39,13 @@ nenvs_registry = {
 
 
 def update_config_parameter(config, param_key, param_value):
-    param_path = param_path_registry[param_key]
+    param_path = param_registry[param_key]["path"]
+    param_type = param_registry[param_key]["type"]
     keys = param_path.split(".")
     current_level = config
     for key in keys[:-1]:
         current_level = current_level.get(key, {})
+    param_value = param_type(param_value)
     current_level[keys[-1]] = param_value
 
 
@@ -62,12 +64,6 @@ def update_config_for_experiment(config, update_params):
         sweep_parameter = sweep_parameter.split(delim)
         sweep_value = sweep_value.split(delim)
         for param, val in zip(sweep_parameter, sweep_value):
-
-            # convert sweep value to float when necessary
-            try:
-                val = float(val)
-            except ValueError:
-                pass
             # update parameter value combination
             update_config_parameter(config, param, val)
 
