@@ -82,7 +82,9 @@ def update_config_for_experiment(config, update_params):
             best_lr = best_lr_registry[ref_model_name]
             update_config_parameter(config, "lr", best_lr)
 
-    update_config_parameter(config, "n_envs", nenvs_registry[ref_model_name])
+    # update n_envs if not already updated
+    if "n_envs" not in sweep_parameter:
+        update_config_parameter(config, "n_envs", nenvs_registry[ref_model_name])
 
     if base_model_name is not None:
         update_config_parameter(config, "base_model_name", base_model_name)
