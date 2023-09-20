@@ -93,7 +93,7 @@ elif [[ "$exp" == targ_kl_lr_grid ]]; then
   do
     for targ_kl in "${targ_kl_list[@]}"
     do
-      sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy targ_kl,lr,n_envs $targ_kl,$lr,40"
+      sbatch_params="-p $partition -C 48g slurm/single_exp.sh $task_name $base_model_name $exp_arg NONE $group $kl_type $off_policy targ_kl,lr $targ_kl,$lr"
       echo "sbatch arguments: $sbatch_params"
       sbatch $sbatch_params
     done
