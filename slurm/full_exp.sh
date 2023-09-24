@@ -58,10 +58,10 @@ elif [[ "$base_model_name" == *t5* ]]; then
 fi
 
 # setting gpu partition
-#if [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
-#else
-partition=speech-gpu #contrib-gpu-long
-#fi
+if [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
+else
+  partition=speech-gpu #contrib-gpu-long
+fi
 
 # setting experiment type
 if [[ "$exp" == init_beta ]]; then
