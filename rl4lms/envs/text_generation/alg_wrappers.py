@@ -275,8 +275,8 @@ def wrap_onpolicy_alg(
                 self.num_timesteps += self.env.num_envs
 
                 # compute total rewards
-                # total_rewards = rewards + kl_rewards.cpu().numpy()
-                total_rewards = kl_rewards.cpu().numpy()
+                total_rewards = rewards + kl_rewards.cpu().numpy()
+                # total_rewards = kl_rewards.cpu().numpy()
 
 
                 # unpack individual observations
