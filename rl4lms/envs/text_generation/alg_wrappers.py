@@ -242,27 +242,29 @@ def wrap_onpolicy_alg(
                         torch.isfinite(ref_log_probs)
                     ), "Infinite values in log probs"
 
-                    if self.kl_type == "standard":
+                    if "standard" in self.kl_type:
                         # compute KL rewards (original)
                         kl_div = raw_log_probs - ref_log_probs
-                    elif self.kl_type == "full_kl":
+                    elif "full_kl" in self.kl_type:
                         # compute KL rewards (True KL Div)
                         full_logits = F.log_softmax(full_logits, dim=1)
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
                         kl_div = nn.KLDivLoss(reduction="none")(full_logits, ref_full_logits).sum(dim=1)
-                    elif self.kl_type == "full_kl_2":
+                    elif "full_kl_2" in self.kl_type:
                         # compute KL rewards (True KL Div)
                         full_logits = F.softmax(full_logits, dim=1)
                         ref_full_logits = F.log_softmax(ref_full_logits, dim=1)
                         kl_div = nn.KLDivLoss(reduction="none")(ref_full_logits, full_logits).sum(dim=1)
-                    elif self.kl_type == "cross_entropy":
+                    elif "cross_entropy" in self.kl_type:
                         # compute KL rewards (KD - Cross Entropy)
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
                         kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits)
-                    elif self.kl_type == "cross_entropy_2":
+                    elif "cross_entropy_2" in self.kl_type:
                         # compute KL rewards (KD - Cross Entropy)
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
                         kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits) / 10
+                    elif "no_kl" in self.kl_type:
+                        pass
                     else:
                         raise Exception("Error with kl_type value. Not one of the designed values.")
 
@@ -275,7 +277,12 @@ def wrap_onpolicy_alg(
                 self.num_timesteps += self.env.num_envs
 
                 # compute total rewards
-                total_rewards = rewards + kl_rewards.cpu().numpy()
+                if "only" in self.kl_type:
+                    total_rewards = kl_rewards.cpu().numpy()
+                elif "no_kl" in self.kl_type:
+                    total_rewards = rewards
+                else:
+                    total_rewards = rewards + kl_rewards.cpu().numpy()
                 # total_rewards = kl_rewards.cpu().numpy()
 
 
