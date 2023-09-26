@@ -283,7 +283,6 @@ def wrap_onpolicy_alg(
                     total_rewards = rewards
                 else:
                     total_rewards = rewards + kl_rewards.cpu().numpy()
-                # total_rewards = kl_rewards.cpu().numpy()
 
 
                 # unpack individual observations
