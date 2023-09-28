@@ -279,10 +279,13 @@ def wrap_onpolicy_alg(
                 # compute total rewards
                 if "only" in self.kl_type:
                     total_rewards = kl_rewards.cpu().numpy()
+                    print("**total_rewards = kl_rewards.cpu().numpy()**")
                 elif "no_kl" in self.kl_type:
                     total_rewards = rewards
+                    print("**total_rewards = rewards**")
                 else:
                     total_rewards = rewards + kl_rewards.cpu().numpy()
+                    print("**total_rewards = rewards + kl_rewards.cpu().numpy()**")
 
 
                 # unpack individual observations
