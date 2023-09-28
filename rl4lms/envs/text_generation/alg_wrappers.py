@@ -264,7 +264,7 @@ def wrap_onpolicy_alg(
                         ref_full_logits = F.softmax(ref_full_logits, dim=1)
                         kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits) / 10
                     elif "no_kl" in self.kl_type:
-                        kl_div = torch.zeros(raw_log_probs.shape())
+                        kl_div = torch.zeros_like(raw_log_probs)
                     else:
                         raise Exception("Error with kl_type value. Not one of the designed values.")
 
