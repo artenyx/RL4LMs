@@ -280,6 +280,7 @@ def wrap_onpolicy_alg(
                 # compute total rewards
                 if "only" in self.kl_type:
                     rewards = np.zeros_like(rewards)
+                    print("**rewards = np.zeros_like(rewards)**")
 
                 total_rewards = rewards + kl_rewards.cpu().numpy()
 
