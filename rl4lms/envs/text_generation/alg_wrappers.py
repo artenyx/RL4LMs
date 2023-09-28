@@ -283,6 +283,7 @@ def wrap_onpolicy_alg(
                     print("**rewards = np.zeros_like(rewards)**")
 
                 total_rewards = rewards + kl_rewards.cpu().numpy()
+                print(f"**{rewards},{total_rewards}**")
 
 
                 # unpack individual observations
