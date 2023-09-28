@@ -278,7 +278,7 @@ def wrap_onpolicy_alg(
 
                 # compute total rewards
                 if "only" in self.kl_type:
-                    rewards = torch.zeros_like(rewards)
+                    rewards = np.zeros_like(rewards)
 
                 total_rewards = rewards + kl_rewards.cpu().numpy()
 
