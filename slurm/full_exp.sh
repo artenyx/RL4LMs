@@ -1,7 +1,7 @@
 #!/bin/bash
 
 task_name="$1"
-base_model_sm="$2"
+base_model_name="$2"
 
 if [ -n "$3" ]; then
   group="$3"
@@ -33,27 +33,13 @@ else
   exp_arg=NONE
 fi
 
-
-# setting base model
-if [[ "$task_name" == imdb_text_continuation ]] || [[ "$task_name" == dialog ]] || [[ "$task_name" == human_judgement ]]; then
-  if [[ $base_model_sm == true ]]; then
-    base_model_name=distilgpt2
-  else
-    base_model_name=gpt2
-  fi
-else
-  if [[ $base_model_sm == true ]]; then
-    base_model_name=t5-small
-  else
-    base_model_name=t5-base
-  fi
-fi
-
 #setting reference model list
-if [[ "$base_model_name" == *gpt2* ]]; then
+if [[ "$base_model_name" == gpt2 ]]; then
   ref_models=("gpt2" "gpt2-medium" "gpt2-large" "gpt2-xl")
+elif [[ "$base_model_name" == gpt2-small ]]; then
+  ref_models=("gpt2-small" "gpt2" "gpt2-medium" "gpt2-large" "gpt2-xl")
 elif [[ "$base_model_name" == t5-small ]]; then
-  ref_models=("t5-small" "t5-base" "t5-large" "t5-3b")
+  ref_models=("t5-small" "t5-base" "t5-large" "t5-3b" "t5-11b")
 elif [[ "$base_model_name" == t5-base ]]; then
   ref_models=("t5-base" "t5-large" "t5-3b" "t5-11b")
 fi
