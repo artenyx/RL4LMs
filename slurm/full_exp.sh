@@ -52,8 +52,9 @@ fi
 #setting reference model list
 if [[ "$base_model_name" == *gpt2* ]]; then
   ref_models=("gpt2" "gpt2-medium" "gpt2-large" "gpt2-xl")
-
-elif [[ "$base_model_name" == *t5* ]]; then
+elif [[ "$base_model_name" == t5-small ]]; then
+  ref_models=("t5-small" "t5-base" "t5-large" "t5-3b")
+elif [[ "$base_model_name" == t5-base ]]; then
   ref_models=("t5-base" "t5-large" "t5-3b" "t5-11b")
 fi
 
