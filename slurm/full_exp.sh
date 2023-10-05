@@ -45,9 +45,10 @@ elif [[ "$base_model_name" == t5-base ]]; then
 fi
 
 # setting gpu partition
-if [[ "$task_name" == common_gen ]]; then  partition=contrib-gpu-long
+if [[ "$task_name" == "common_gen" || "$task_name" == "summarization" ]]; then
+  partition=contrib-gpu-long
 else
-  partition=speech-gpu #contrib-gpu-long
+  partition=speech-gpu
 fi
 
 # setting experiment type

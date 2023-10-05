@@ -284,6 +284,7 @@ def wrap_onpolicy_alg(
 
                 total_rewards = rewards + kl_rewards.cpu().numpy()
                 print(f"**{rewards},{total_rewards}**")
+                # print(f"**{total_rewards},{rewards},{kl_rewards.cpu().numpy()}**")
 
 
                 # unpack individual observations
@@ -310,7 +311,7 @@ def wrap_onpolicy_alg(
                             else None,
                             info=infos[env_ix],
                         )
-
+                        print(f"***transition task reward: {transtion.task_reward}***")
                         episode_wise_transitions[env_ix].append(transtion)
 
                     # mark this episode to terminated if done occurs once
@@ -340,6 +341,7 @@ def wrap_onpolicy_alg(
                 total_kl_reward = 0.0
                 for transition_ix, transition in enumerate(transitions):
                     total_reward += transition.task_reward
+                    print(f"***total_reward += transition.task_reward, transition.task_reward:{transition.task_reward}***")
                     total_kl_reward += transition.kl_reward
                     rollout_info["rollout_info/kl_div_mean"].append(transition.kl_div)
                     rollout_info["rollout_info/log_prob"].append(transition.log_prob)
@@ -384,6 +386,7 @@ def wrap_onpolicy_alg(
                         advantages_computed = True
 
                 rollout_info["rollout_info/ep_rew"].append(total_reward)
+                print(f"***rollout_info/ep_rew:{total_reward}***")
                 rollout_info["rollout_info/ep_lens"].append(ep_length)
                 rollout_info["rollout_info/ep_kl_rew"].append(total_kl_reward)
             return rollout_info
