@@ -68,8 +68,8 @@ elif [[ "$exp" == targ_kl ]]; then
   done
 elif [[ "$exp" == targ_kl_ref_grid ]]; then
   #targ_kl_list=(2.2 2.4 2.6 2.8 3.0 3.2)
-  targ_kl_list=(3.4 3.6 3.8 4.0)
-  ref_models=("t5-large")
+  targ_kl_list=(3.4 3.6 3.8 4.0 4.2 4.4)
+  ref_models=("t5-3b")
   for ref_model_name in "${ref_models[@]}"
   do
     for targ_kl in "${targ_kl_list[@]}"
