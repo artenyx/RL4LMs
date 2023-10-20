@@ -426,7 +426,7 @@ def wrap_onpolicy_alg(
                 rollout_info = self.generate_batch(
                     rollout_buffer, tokenizer, max_steps, rollout_info
                 )
-
+            print(rollout_info["rollout_info/ep_rew"])
             # aggregate rollout info
             aggregated_rollout_info = {}
             for key, values in rollout_info.items():
