@@ -49,8 +49,8 @@ alg:
         max_new_tokens: 100          
     
 train_evaluation:
-  eval_batch_size: 100
-  n_iters: 50 # 100
+  eval_batch_size: 50 #100
+  n_iters: 100
   eval_every: 5 # 10
   save_every: 1000
   metrics:
