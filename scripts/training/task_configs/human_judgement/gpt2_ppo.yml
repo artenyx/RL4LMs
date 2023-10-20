@@ -46,7 +46,7 @@ train_evaluation:
   eval_batch_size: 1
   n_iters: 50
   eval_every: 10
-  save_every: 100
+  save_every: 1000
   metrics:
     - id: deberta
     - id: bert_dual
