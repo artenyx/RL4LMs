@@ -761,6 +761,7 @@ class HumanJudgement_DebertaMetric(BaseMetric):
         )
 
         with torch.no_grad():
+            self._model = torch.compile(self._model)
             outputs = self._model(
                 input_ids=encoded.input_ids.to(self._device),
                 attention_mask=encoded.attention_mask.to(self._device),
