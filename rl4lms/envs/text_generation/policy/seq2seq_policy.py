@@ -66,18 +66,18 @@ class Seq2SeqLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin)
         self.load_from_dict(state_dict)
 
     def _build_model_heads(self, model_name: str, ref_model_name: str):
-        self._policy_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        self._policy_model = AutoModelForSeq2SeqLM.from_pretrained(model_name, load_in_8bit=True)
         self._policy_model.__class__ = override_generation_routines(
             type(self._policy_model)
         )
 
-        self._value_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        self._value_model = AutoModelForSeq2SeqLM.from_pretrained(model_name, load_in_8bit=True)
 
         if ref_model_name is None:
             ref_model_name = model_name
-            self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name).eval()
+            self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name, load_in_8bit=True).eval()
         else:
-            self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name).eval()
+            self._ref_model = AutoModelForSeq2SeqLM.from_pretrained(ref_model_name, load_in_8bit=True).eval()
 
         self._policy_model.__class__ = override_generation_routines(
             type(self._ref_model)

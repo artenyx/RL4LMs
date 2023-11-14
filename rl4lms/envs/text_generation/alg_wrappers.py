@@ -386,7 +386,8 @@ def wrap_onpolicy_alg(
                         advantages_computed = True
 
                 rollout_info["rollout_info/ep_rew"].append(total_reward)
-                print(f"***rollout_info/ep_rew:{total_reward}***")
+                delete = rollout_info["rollout_info/ep_rew"]
+                print(f"***rollout_info/ep_rew:{delete}***")
                 rollout_info["rollout_info/ep_lens"].append(ep_length)
                 rollout_info["rollout_info/ep_kl_rew"].append(total_kl_reward)
             return rollout_info
