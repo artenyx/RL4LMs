@@ -265,7 +265,7 @@ def wrap_onpolicy_alg(
                         kl_div = nn.CrossEntropyLoss(reduction="none")(full_logits, ref_full_logits) / 10
                     elif "no_kl" in self.kl_type:
                         kl_div = torch.zeros_like(raw_log_probs)
-                        print("**kl_div = torch.zeros_like(raw_log_probs)**")
+                        #print("**kl_div = torch.zeros_like(raw_log_probs)**")
                     else:
                         raise Exception("Error with kl_type value. Not one of the designed values.")
 
@@ -280,10 +280,10 @@ def wrap_onpolicy_alg(
                 # compute total rewards
                 if "only" in self.kl_type:
                     rewards = np.zeros_like(rewards)
-                    print("**rewards = np.zeros_like(rewards)**")
+                    #print("**rewards = np.zeros_like(rewards)**")
 
                 total_rewards = rewards + kl_rewards.cpu().numpy()
-                print(f"**task_rewards: {rewards}, total_rewards: {total_rewards}**")
+                #print(f"**task_rewards: {rewards}, total_rewards: {total_rewards}**")
                 # print(f"**{total_rewards},{rewards},{kl_rewards.cpu().numpy()}**")
 
 
@@ -311,7 +311,7 @@ def wrap_onpolicy_alg(
                             else None,
                             info=infos[env_ix],
                         )
-                        print(f"***transition task reward: {transtion.task_reward}***")
+                        #print(f"***transition task reward: {transtion.task_reward}***")
                         episode_wise_transitions[env_ix].append(transtion)
 
                     # mark this episode to terminated if done occurs once
@@ -341,7 +341,7 @@ def wrap_onpolicy_alg(
                 total_kl_reward = 0.0
                 for transition_ix, transition in enumerate(transitions):
                     total_reward += transition.task_reward
-                    print(f"***total_reward += transition.task_reward, transition.task_reward:{transition.task_reward}***")
+                    #print(f"***total_reward += transition.task_reward, transition.task_reward:{transition.task_reward}***")
                     total_kl_reward += transition.kl_reward
                     rollout_info["rollout_info/kl_div_mean"].append(transition.kl_div)
                     rollout_info["rollout_info/log_prob"].append(transition.log_prob)
@@ -387,7 +387,7 @@ def wrap_onpolicy_alg(
 
                 rollout_info["rollout_info/ep_rew"].append(total_reward)
                 delete = rollout_info["rollout_info/ep_rew"]
-                print(f"***rollout_info/ep_rew:{delete}***")
+                #print(f"***rollout_info/ep_rew:{delete}***")
                 rollout_info["rollout_info/ep_lens"].append(ep_length)
                 rollout_info["rollout_info/ep_kl_rew"].append(total_kl_reward)
             return rollout_info
@@ -427,7 +427,7 @@ def wrap_onpolicy_alg(
                 rollout_info = self.generate_batch(
                     rollout_buffer, tokenizer, max_steps, rollout_info
                 )
-            print(rollout_info["rollout_info/ep_rew"])
+            #print(rollout_info["rollout_info/ep_rew"])
             # aggregate rollout info
             aggregated_rollout_info = {}
             for key, values in rollout_info.items():
