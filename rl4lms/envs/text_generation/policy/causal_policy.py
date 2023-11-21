@@ -75,9 +75,8 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
 
         if ref_model_name is None:
             ref_model_name = model_name
-            self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name, load_in_8bit=True).eval()
-        else:
-            self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name, load_in_8bit=True).eval()
+
+        self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name, load_in_8bit=True).eval()
 
         self._policy_model.__class__ = override_generation_routines(
             type(self._ref_model)
