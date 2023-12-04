@@ -68,7 +68,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         self.load_from_dict(state_dict)
 
     def _build_model_heads(self, model_name: str, ref_model_name: str):
-        self._policy_model = AutoModelForCausalLM.from_pretrained(model_name, load_in_8bit=True)
+        self._policy_model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
         self._policy_model.__class__ = override_generation_routines(
             type(self._policy_model)
         )
@@ -76,13 +76,13 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         if ref_model_name is None:
             ref_model_name = model_name
 
-        self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name, load_in_8bit=True).eval()
+        self._ref_model = AutoModelForCausalLM.from_pretrained(ref_model_name).eval()
 
         self._policy_model.__class__ = override_generation_routines(
             type(self._ref_model)
         )
 
-        self._value_model = AutoModelForCausalLM.from_pretrained(model_name, load_in_8bit=True)
+        self._value_model = AutoModelForCausalLM.from_pretrained(model_name)
         self._value_head = nn.Linear(
             self._value_model.config.hidden_size, 1, bias=False
         )
