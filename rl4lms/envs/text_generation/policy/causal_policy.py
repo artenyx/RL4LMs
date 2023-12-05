@@ -68,7 +68,7 @@ class CausalLMActorCriticPolicy(LMActorCriticPolicy, ActorCriticWarmStartMixin):
         self.load_from_dict(state_dict)
 
     def _build_model_heads(self, model_name: str, ref_model_name: str):
-        self._policy_model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")
+        self._policy_model = AutoModelForCausalLM.from_pretrained(model_name)
         self._policy_model.__class__ = override_generation_routines(
             type(self._policy_model)
         )
